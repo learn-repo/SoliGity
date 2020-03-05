@@ -1,0 +1,32 @@
+{
+  "name": "backend",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "babel-node": "babel-node",
+    "start": "concurrently \"yarn backend\" \"yarn frontend\"",
+    "backend": "nodemon --exec npm run babel-node --  ./bin/www",
+    "frontend": "nodemon start-frontend.js"
+  },
+  "dependencies": {
+    "concurrently": "^3.5.1",
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.8.6",
+    "@babel/node": "^7.8.4",
+    "@babel/preset-env": "^7.8.6",
+    "@octokit/rest": "^16.43.1",
+    "bcrypt": "^4.0.1",
+    "cookie-parser": "~1.4.4",
+    "cors": "^2.8.5",
+    "crypto-js": "^4.0.0",
+    "debug": "~2.6.9",
+    "dotenv": "^8.2.0",
+    "express": "~4.16.1",
+    "http-errors": "~1.6.3",
+    "jade": "~1.11.0",
+    "jsonwebtoken": "^8.5.1",
+    "morgan": "~1.9.1",
+    "sequelize": "^5.21.5",
+    "sqlite3": "^4.1.1"
+  }
+}
