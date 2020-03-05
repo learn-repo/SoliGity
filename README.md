@@ -27,5 +27,8 @@ yarn install
 # Back to root directory
 cd ..
 
+# Setup database (run all the migrations)
+npx sequelize-cli db:migrate
+
 # Start backend server and frontend
 yarn start
