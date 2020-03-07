@@ -1,5 +1,5 @@
 const express = require("express");
-const models = require("../../models");
+const models = require("../../db/models")
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 

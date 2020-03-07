@@ -1,5 +1,5 @@
 var express = require("express");
-const models = require("../../models");
+const models = require("../../db/models")
 const CryptoJS = require("crypto-js");
 const jwt = require("jsonwebtoken");
 const Octokit = require("@octokit/rest");
