@@ -12,17 +12,17 @@ contract SoliGity {
     help_wanted - user need help and sent a reward event
     under_review - user is reviewing the recent help
                 -> if review been accepted -> eventstatus: approved
-                -> if review been rejected -> eventstatus: under_review (rolls back to previous)
+                -> if review been rejected -> eventstatus: help_wanted (rolls back to previous)
     approved - user approved the recent help (and issue been closed)
     */
     enum eventStatus {no_requst, help_wanted, under_review, approved}
 
-    struct RewardEvenet {
+    struct RewardEvent {
         uint eventID;                   // event ID to track each event
         // sponsor part - problem initiator
         uint sponsorID;                 // people who sent the request for help or review
         string sponsorName;             // sponsor's name/or github ID name
-        address sponsorAddress;         // sponsor's ETH address
+        address payable sponsorAddress;         // sponsor's ETH address
         // bounty hunter part - contributor
         uint bountyHunterID;            // people who helped the sponsor to solve the problem
         string bountyHunterName;        // bounty hunter's name/or github ID name
@@ -35,7 +35,7 @@ contract SoliGity {
 
     // mapping adress to reward events - type public
     // use uint => RewardEvent because one user can send multiple reward events
-    mapping (uint => RewardEvenet) public RewardEvenets;
+    mapping (uint => RewardEvent) public RewardEvents;
 
     // constructor initalization
     constructor() public {
@@ -51,12 +51,12 @@ contract SoliGity {
     */
 
     // event creation broadcast
-    event RewardEventRequest (
+    event RewardRequest (
         uint eventID,
         // sponsor part - problem initiator
         uint sponsorID,
         string sponsorName,
-        address sponsorAddress,
+        address payable sponsorAddress,
         uint256 bountyAmount,       // the amount of money that sponsor are willing to pay
         // event status
         eventStatus status
@@ -64,12 +64,12 @@ contract SoliGity {
 
     // event review broadcast
     // if someone pr first -> broadcast to the network early -> has priority to get the reward
-    event RewardEventUnderReview (
+    event RewardUnderReview (
         uint eventID,
         // sponsor part - problem initiator
         uint sponsorID,
         string sponsorName,
-        address sponsorAddress,
+        address payable sponsorAddress,
          // bounty hunter part - contributor
         uint bountyHunterID,
         string bountyHunterName,
@@ -81,12 +81,12 @@ contract SoliGity {
     );
 
     // unfortunately - your pr is rejected due to some mistakes maybe, try next time
-    event RewardEventRejected (
-         uint eventID,
+    event RewardRejected (
+        uint eventID,
         // sponsor part - problem initiator
         uint sponsorID,
         string sponsorName,
-        address sponsorAddress,
+        address payable sponsorAddress,
          // bounty hunter part - contributor
         uint bountyHunterID,
         string bountyHunterName,
@@ -98,12 +98,12 @@ contract SoliGity {
     );
 
      // unfortunately - your pr is rejected due to some mistakes maybe, try next time
-    event RewardEventApproved (
-         uint eventID,
+    event RewardApproved (
+        uint eventID,
         // sponsor part - problem initiator
         uint sponsorID,
         string sponsorName,
-        address sponsorAddress,
+        address payable sponsorAddress,
          // bounty hunter part - contributor
         uint bountyHunterID,
         string bountyHunterName,
@@ -116,15 +116,15 @@ contract SoliGity {
 
     // functions declearation
     // create a reward event
-    function createRewardEvent(string memory _sponsorName, uint _sponsorID, uint256 _bountyAmount) public {
-        require(bytes(_sponsorName).length > 0, 'Sponsor Name should not be empty');
+    function createRewardEvent(uint _sponsorID, string memory _sponsorName, uint256 _bountyAmount) public {
+        require(bytes(_sponsorName).length > 0, 'Sponsor name should not be empty');
         require(_sponsorID != 0, 'Sponsor ID should not be 0');
         require(msg.sender.balance >= _bountyAmount, 'Sponsor should have enough money');
         // accumulate the number of events been requested
         eventNumber++;
 
         // reward events record
-        RewardEvenets[eventNumber] = RewardEvenet(
+        RewardEvents[eventNumber] = RewardEvent(
             eventNumber,
             _sponsorID,
             _sponsorName,
@@ -137,8 +137,8 @@ contract SoliGity {
             eventStatus.help_wanted
         );
 
-        // emit event to the network
-        emit RewardEventRequest(
+        // broadcast event to the network
+        emit RewardRequest(
             eventNumber,
             _sponsorID,
             _sponsorName,
@@ -148,14 +148,33 @@ contract SoliGity {
         );
     }
 
-    
-    /*
-    function featureRequest() public payable {
-        // TODO:
+    // review a reward event
+    function reviewRewardEvent(uint _eventID, uint _bountyHunterID, string memory _bountyHunterName) public {
+        RewardEvent memory _RewardEvent = RewardEvents[_eventID];
+        require(bytes(_bountyHunterName).length > 0, 'Bounty hunter name should not be empty');
+        require(_bountyHunterID != 0, 'Bounty hunter ID should not be 0');
+        require(RewardEvents[_eventID].status == eventStatus.help_wanted, 'Event shold be help-wanted');
+
+        // update bounty hunter info in struct
+        _RewardEvent.bountyHunterID = _bountyHunterID;
+        _RewardEvent.bountyHunterName = _bountyHunterName;
+        _RewardEvent.bountyHunterAddress = msg.sender;
+        _RewardEvent.status = eventStatus.under_review;
+        // save it to the struct
+        RewardEvents[_eventID] = _RewardEvent;
+
+        // broadcast event to the network
+        emit RewardUnderReview(
+            RewardEvents[_eventID].eventID,
+            RewardEvents[_eventID].sponsorID,
+            RewardEvents[_eventID].sponsorName,
+            RewardEvents[_eventID].sponsorAddress,
+            RewardEvents[_eventID].bountyHunterID,
+            RewardEvents[_eventID].bountyHunterName,
+            RewardEvents[_eventID].bountyHunterAddress,
+            RewardEvents[_eventID].bountyAmount,
+            RewardEvents[_eventID].status
+        );
     }
 
-    function createIssue() public {
-        // TODO:
-    }
-    */
 }
