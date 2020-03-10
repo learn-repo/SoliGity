@@ -16,14 +16,15 @@ contract SoliGity {
     enum eventStatus {no_requst, help_wanted, under_review, approved}
 
     struct RewardEvent {
-        uint eventID; // event ID to track each event
+        uint projectID;     // link project to the event
+        uint eventID;       // event ID to track each event
         // sponsor part - problem initiator
-        uint sponsorID; // people who sent the request for help or review
-        string  sponsorName; // sponsor's name/or github ID name
+        uint sponsorID;         // people who sent the request for help or review
+        string  sponsorName;    // sponsor's name/or github ID name
         address sponsorAddress; // sponsor's ETH address
         // bounty hunter part - contributor
-        uint bountyHunterID; // people who helped the sponsor to solve the problem
-        string  bountyHunterName; // bounty hunter's name/or github ID name
+        uint bountyHunterID;        // people who helped the sponsor to solve the problem
+        string  bountyHunterName;   // bounty hunter's name/or github ID name
         address payable bountyHunterAddress; // bounty hunter's ETH address
         // reward part
         uint bountyAmount; // the amount of money that sponsor are willing to pay
@@ -42,14 +43,15 @@ contract SoliGity {
 
     /*
     events decleration:
-    1. request a event
-    2. review a event(request/pull request)
-    3. approve a event
-    4. reject a event
+    1. create an issue
+    2. request a review
+    3. approve an issue
+    4. reject an issue
     */
 
     // event creation broadcast
-    event RewardRequest(
+    event createIssueEvent(
+        uint projectID,
         uint eventID,
         // sponsor part - problem initiator
         uint sponsorID,
@@ -62,7 +64,8 @@ contract SoliGity {
 
     // event review broadcast
     // if someone pr first -> broadcast to the network early -> has priority to get the reward
-    event RewardUnderReview(
+    event createIssueEvent(
+        uint projectID,
         uint eventID,
         // sponsor part - problem initiator
         uint sponsorID,
@@ -80,6 +83,7 @@ contract SoliGity {
 
     // unfortunately - your pr is rejected due to some mistakes maybe, try next time
     event RewardRejected(
+        uint projectID,
         uint eventID,
         // sponsor part - problem initiator
         uint sponsorID,
@@ -97,6 +101,7 @@ contract SoliGity {
 
     // unfortunately - your pr is rejected due to some mistakes maybe, try next time
     event RewardApproved(
+        uint projectID,
         uint eventID,
         // sponsor part - problem initiator
         uint sponsorID,
@@ -114,15 +119,17 @@ contract SoliGity {
 
     // functions declearation
     // create a reward event
-    function createIssue( uint _sponsorID, string memory _sponsorName, uint _bountyAmount) public {
+    function createIssue(uint _projectID, uint _sponsorID, string memory _sponsorName, uint _bountyAmount) public {
         require(bytes(_sponsorName).length > 0, "Sponsor name should not be empty");
         require(_sponsorID != 0, "Sponsor ID should not be 0");
+        require(_projectID != 0, "Project ID should not be 0");
         require(msg.sender.balance >= _bountyAmount, "Sponsor should have enough money");
         // accumulate the number of events been requested
         eventNumber++;
 
         // reward events record
         RewardEvents[eventNumber] = RewardEvent(
+            _projectID,
             eventNumber,
             _sponsorID,
             _sponsorName,
@@ -136,7 +143,8 @@ contract SoliGity {
         );
 
         // broadcast event to the network
-        emit RewardRequest(
+        emit createIssueEvent(
+            _projectID,
             eventNumber,
             _sponsorID,
             _sponsorName,
@@ -162,7 +170,8 @@ contract SoliGity {
         RewardEvents[_eventID] = _RewardEvent;
 
         // broadcast event to the network
-        emit RewardUnderReview(
+        emit createIssueEvent(
+            RewardEvents[_eventID].projectID,
             RewardEvents[_eventID].eventID,
             RewardEvents[_eventID].sponsorID,
             RewardEvents[_eventID].sponsorName,
@@ -190,6 +199,7 @@ contract SoliGity {
         _rewardRecevier.transfer(_RewardEvent.bountyAmount);
         // broadcast event to the network
         emit RewardApproved(
+            RewardEvents[_eventID].projectID,
             RewardEvents[_eventID].eventID,
             RewardEvents[_eventID].sponsorID,
             RewardEvents[_eventID].sponsorName,
@@ -217,6 +227,7 @@ contract SoliGity {
        
         // broadcast event to the network
         emit RewardApproved(
+            RewardEvents[_eventID].projectID,
             RewardEvents[_eventID].eventID,
             RewardEvents[_eventID].sponsorID,
             RewardEvents[_eventID].sponsorName,

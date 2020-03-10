@@ -31,8 +31,8 @@ contract(SoliGity, ([deployer, sponsor1, sponsor2, sponsor3]) => {
         let numRequests;
 
         before(async () => {
-            // user Daniel: ID 123 pay 2 ethers - sponsor 1
-            result = await soliGity.createIssue('123', 'Daniel', web3.utils.toWei('2', 'Ether'), { from: sponsor1 })
+            // user Daniel: ID 123 pay 2 ethers - sponsor 1 Project 1
+            result = await soliGity.createIssue('1', '123', 'Daniel', web3.utils.toWei('2', 'Ether'), { from: sponsor1 })
             numRequests = await soliGity.eventNumber()
         })
 
@@ -40,6 +40,7 @@ contract(SoliGity, ([deployer, sponsor1, sponsor2, sponsor3]) => {
         it('A customer should create an event successfully', async () => {
             assert.equal(numRequests, 1);
             const event = result.logs[0].args;
+            assert.equal(event.projectID.toNumber(), 1, 'Project ID should be 1 since we have only 1 project');
             assert.equal(event.eventID.toNumber(), 1, 'number of events should be equal to 1 since this is the first test');
             assert.equal(event.sponsorID.toNumber(), 123, '1st user ID is 123, the result should be 123');
             assert.equal(event.sponsorName, 'Daniel', '1st user Name is Daniel. .... ');
@@ -48,8 +49,8 @@ contract(SoliGity, ([deployer, sponsor1, sponsor2, sponsor3]) => {
 
         // a request should be failed 
         it('Check the customer name and ID', async () => {
-            await soliGity.createIssue('', 'Daniel', '10', { from: sponsor1 }).should.be.rejected;
-            await soliGity.createIssue('123', '', '10', { from: sponsor1 }).should.be.rejected;
+            await soliGity.createIssue('1','', 'Daniel', '10', { from: sponsor1 }).should.be.rejected;
+            await soliGity.createIssue('1','123', '', '10', { from: sponsor1 }).should.be.rejected;
         })
 
         it('Check the request sender has enough money or not', async () => {
