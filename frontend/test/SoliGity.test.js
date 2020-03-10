@@ -32,7 +32,7 @@ contract(SoliGity, ([deployer, sponsor1, sponsor2, sponsor3]) => {
 
         before(async () => {
             // user Daniel: ID 123 pay 10000 - sponsor 1
-            result = await soliGity.createRewardEvent('123', 'Daniel', '10000', {from: sponsor1})
+            result = await soliGity.createRewardEvent('123', 'Daniel', '10000', { from: sponsor1 })
             numRequests = await soliGity.eventNumber()
         })
 
@@ -48,12 +48,12 @@ contract(SoliGity, ([deployer, sponsor1, sponsor2, sponsor3]) => {
 
         // a request should be failed 
         it('Check the customer name and ID', async () => {
-            await soliGity.createRewardEvent('', 'Daniel', '10000', {from: sponsor1}).should.be.rejected;
-            await soliGity.createRewardEvent('123', '', '10000', {from: sponsor1}).should.be.rejected;
+            await soliGity.createRewardEvent('', 'Daniel', '10000', { from: sponsor1 }).should.be.rejected;
+            await soliGity.createRewardEvent('123', '', '10000', { from: sponsor1 }).should.be.rejected;
         })
 
         it('Check the request sender has enough money or not', async () => {
-            await soliGity.createRewardEvent('123', '', '999999999999999999999999999', {from: sponsor1}).should.be.rejected;
+            await soliGity.createRewardEvent('123', '', '999999999999999999999999999', { from: sponsor1 }).should.be.rejected;
         })
 
     })

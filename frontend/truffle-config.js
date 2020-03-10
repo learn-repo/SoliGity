@@ -10,7 +10,7 @@ module.exports = {
         },
     },
     contracts_directory: './src/contracts/',
-    contracts_build_directory: './truffle/abis/',
+    contracts_build_directory: './src/abis/',
     compilers: {
         solc: {
             optimizer: {
@@ -19,5 +19,4 @@ module.exports = {
             }
         }
     },
-    migrations_directory: "./truffle/migrations/"
 }
