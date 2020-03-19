@@ -6,25 +6,27 @@ contract SoliGity {
     // event status to keep track of the status of reward event
     /*
     enum explaination
-    no_requst - user has no request now
+    no_requst - user has no request now // FIXME: never used
     help_wanted - user need help and sent a reward event
     under_review - user is reviewing the recent help
                 -> if review been accepted -> eventstatus: approved
                 -> if review been rejected -> eventstatus: help_wanted (rolls back to previous)
     approved - user approved the recent help (and issue been closed)
     */
-    enum eventStatus {no_requst, help_wanted, under_review, approved}
+    enum eventStatus {help_wanted, under_review, approved}
 
+    // FIXME: add field title, description(optional)
     struct RewardEvent {
-        uint256 projectID;     // link project to the event
-        uint256 eventID;       // event ID to track each event
+        uint256 projectID; // link project to the event
+        uint256 eventID; // event ID to track each event
+        string title;
         // sponsor part - problem initiator
-        uint256 sponsorID;         // people who sent the request for help or review
-        string  sponsorName;    // sponsor's name/or github ID name
+        uint256 sponsorID; // people who sent the request for help or review
+        string sponsorName; // sponsor's name/or github ID name
         address sponsorAddress; // sponsor's ETH address
         // bounty hunter part - contributor
-        uint256 bountyHunterID;        // people who helped the sponsor to solve the problem
-        string  bountyHunterName;   // bounty hunter's name/or github ID name
+        uint256 bountyHunterID; // people who helped the sponsor to solve the problem
+        string bountyHunterName; // bounty hunter's name/or github ID name
         address payable bountyHunterAddress; // bounty hunter's ETH address
         // reward part
         uint256 bountyAmount; // the amount of money that sponsor are willing to pay
@@ -53,9 +55,10 @@ contract SoliGity {
     event createIssueEvent(
         uint256 projectID,
         uint256 eventID,
+        string title,
         // sponsor part - problem initiator
         uint256 sponsorID,
-        string  sponsorName,
+        string sponsorName,
         address sponsorAddress,
         uint256 bountyAmount, // the amount of money that sponsor are willing to pay
         // event status
@@ -64,16 +67,16 @@ contract SoliGity {
 
     // event review broadcast
     // if someone pr first -> broadcast to the network early -> has priority to get the reward
-    event createIssueEvent(
+    event requestReviewEvent(
         uint256 projectID,
         uint256 eventID,
         // sponsor part - problem initiator
         uint256 sponsorID,
-        string  sponsorName,
+        string sponsorName,
         address sponsorAddress,
         // bounty hunter part - contributor
         uint256 bountyHunterID,
-        string  bountyHunterName,
+        string bountyHunterName,
         address payable bountyHunterAddress,
         // amount
         uint256 bountyAmount, // the amount of money that sponsor are willing to pay
@@ -87,11 +90,11 @@ contract SoliGity {
         uint256 eventID,
         // sponsor part - problem initiator
         uint256 sponsorID,
-        string  sponsorName,
+        string sponsorName,
         address sponsorAddress,
         // bounty hunter part - contributor
         uint256 bountyHunterID,
-        string  bountyHunterName,
+        string bountyHunterName,
         address payable bountyHunterAddress,
         // amount
         uint256 bountyAmount, // the amount of money that sponsor are willing to pay
@@ -105,11 +108,11 @@ contract SoliGity {
         uint256 eventID,
         // sponsor part - problem initiator
         uint256 sponsorID,
-        string  sponsorName,
+        string sponsorName,
         address sponsorAddress,
         // bounty hunter part - contributor
         uint256 bountyHunterID,
-        string  bountyHunterName,
+        string bountyHunterName,
         address payable bountyHunterAddress,
         // amount
         uint256 bountyAmount, // the amount of money that sponsor are willing to pay
@@ -119,11 +122,25 @@ contract SoliGity {
 
     // functions declearation
     // create a reward event
-    function createIssue(uint256 _projectID, uint256 _sponsorID, string memory _sponsorName, uint256 _bountyAmount) public {
-        require(bytes(_sponsorName).length > 0, "Sponsor name should not be empty");
+    // FIXME: add parameter _title, _description(optional)
+    function createIssue(
+        uint256 _projectID,
+        string memory _title,
+        uint256 _sponsorID,
+        string memory _sponsorName,
+        uint256 _bountyAmount
+    ) public {
+        require(
+            bytes(_sponsorName).length > 0,
+            "Sponsor name should not be empty"
+        );
+        require(bytes(_title).length > 0, "title should not be empty");
         require(_sponsorID != 0, "Sponsor ID should not be 0");
         require(_projectID != 0, "Project ID should not be 0");
-        require(msg.sender.balance >= _bountyAmount, "Sponsor should have enough money");
+        require(
+            msg.sender.balance >= _bountyAmount,
+            "Sponsor should have enough money"
+        );
         // accumulate the number of events been requested
         eventNumber++;
 
@@ -131,6 +148,7 @@ contract SoliGity {
         RewardEvents[eventNumber] = RewardEvent(
             _projectID,
             eventNumber,
+            _title,
             _sponsorID,
             _sponsorName,
             msg.sender,
@@ -146,6 +164,7 @@ contract SoliGity {
         emit createIssueEvent(
             _projectID,
             eventNumber,
+            _title,
             _sponsorID,
             _sponsorName,
             msg.sender,
@@ -155,11 +174,21 @@ contract SoliGity {
     }
 
     // review a reward event
-    function requestReview( uint256 _eventID, uint256 _bountyHunterID, string memory _bountyHunterName) public {
+    function requestReview(
+        uint256 _eventID,
+        uint256 _bountyHunterID,
+        string memory _bountyHunterName
+    ) public {
         RewardEvent memory _RewardEvent = RewardEvents[_eventID];
-        require(bytes(_bountyHunterName).length > 0, "Bounty hunter name should not be empty");
+        require(
+            bytes(_bountyHunterName).length > 0,
+            "Bounty hunter name should not be empty"
+        );
         require(_bountyHunterID != 0, "Bounty hunter ID should not be 0");
-        require(RewardEvents[_eventID].status == eventStatus.help_wanted,"Event shold be help-wanted");
+        require(
+            RewardEvents[_eventID].status == eventStatus.help_wanted,
+            "Event shold be help-wanted"
+        );
 
         // update bounty hunter info in struct
         _RewardEvent.bountyHunterID = _bountyHunterID;
@@ -170,7 +199,7 @@ contract SoliGity {
         RewardEvents[_eventID] = _RewardEvent;
 
         // broadcast event to the network
-        emit createIssueEvent(
+        emit requestReviewEvent(
             RewardEvents[_eventID].projectID,
             RewardEvents[_eventID].eventID,
             RewardEvents[_eventID].sponsorID,
@@ -185,11 +214,17 @@ contract SoliGity {
     }
 
     // approve a reward event
-    function approvePR( uint256 _eventID) public payable {
+    function approvePR(uint256 _eventID) public payable {
         RewardEvent memory _RewardEvent = RewardEvents[_eventID];
         address payable _rewardRecevier = _RewardEvent.bountyHunterAddress;
-        require(RewardEvents[_eventID].status == eventStatus.under_review, "Event shold be under-review");
-        require(msg.sender == _RewardEvent.sponsorAddress, "Only issue creator can approve an PR");
+        require(
+            RewardEvents[_eventID].status == eventStatus.under_review,
+            "Event shold be under-review"
+        );
+        require(
+            msg.sender == _RewardEvent.sponsorAddress,
+            "Only issue creator can approve an PR"
+        );
 
         // change the status of the reward event to - approved
         _RewardEvent.status = eventStatus.approved;
@@ -213,10 +248,16 @@ contract SoliGity {
     }
 
     // reject a reward event
-    function rejectPR( uint256 _eventID) public payable {
+    function rejectPR(uint256 _eventID) public payable {
         RewardEvent memory _RewardEvent = RewardEvents[_eventID];
-        require(RewardEvents[_eventID].status == eventStatus.under_review, "Event shold be under-review");
-        require(msg.sender == _RewardEvent.sponsorAddress, "Only issue creator can approve an PR");
+        require(
+            RewardEvents[_eventID].status == eventStatus.under_review,
+            "Event shold be under-review"
+        );
+        require(
+            msg.sender == _RewardEvent.sponsorAddress,
+            "Only issue creator can approve an PR"
+        );
 
         // change the status of the reward event to - approved
         _RewardEvent.status = eventStatus.help_wanted;
