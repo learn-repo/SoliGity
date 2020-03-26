@@ -50,7 +50,8 @@ router.get("/repos/:page", authCheck, async (req, res, next) => {
     console.log(user.gitHubUsername);
     const data = await octokit.repos.list({
         username: user.gitHubUsername,
-        page
+        page,
+        visibility: "public",
     });
     res.json(data);
 });
@@ -155,6 +156,52 @@ router.post("/repo/pr", authCheck, async (req, res, next) => {
         base
     });
     res.json(data);
+});
+
+router.post("/repo/participate", authCheck, async (req, res, next) => {
+    try {
+        const { repoPath } = req.body;
+        const token = req.headers.authorization;
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const id = decoded.userId;
+        const users = await models.User.findAll({ where: { id } });
+        const user = users[0];
+        const bytes = CryptoJS.AES.decrypt(
+            user.gitHubPassword.toString(),
+            process.env.CRYPTO_SECRET
+        );
+        const password = bytes.toString(CryptoJS.enc.Utf8);
+        const octokit = new Octokit({
+            auth: {
+                username: user.gitHubUsername,
+                password
+            }
+        });
+        const [owner, repo] = repoPath.split("/");
+        const response = await octokit.repos.get({
+            owner,
+            repo
+        });
+
+        const data = await models.Repo.create({
+            owner: response.data.owner.login,
+            name: response.data.name,
+            url: response.data.html_url,
+            description: response.data.description ? response.data.description : ""
+        })
+        res.json(data);
+    } catch (error) {
+        res.status(400).json(error);
+    }
+});
+
+router.get("/repo/participated", async (req, res, next) => {
+    try {
+        const data = await models.Repo.findAll({ attributes: ['owner', 'name', "url", "description"] });
+        res.json(data);
+    } catch (error) {
+        res.status(400).json(error);
+    }
 });
 
 module.exports = router;

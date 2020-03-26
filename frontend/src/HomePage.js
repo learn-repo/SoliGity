@@ -35,8 +35,8 @@ function HomePage() {
     }
     return (
         <>
-            <Navbar bg="primary" expand="lg" variant="dark">
-                <Navbar.Brand href="#home">GitHub App</Navbar.Brand>
+            <Navbar bg="light" expand="lg" variant="light">
+                <Navbar.Brand href="#home">soliGity</Navbar.Brand>
             </Navbar>
             <div className="page">
                 <h1 className="text-center">Log In</h1>

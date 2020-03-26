@@ -10,14 +10,17 @@ import {
     changePassword
 } from "./requests";
 import LoggedInTopBar from "./LoggedInTopBar";
+
 const userFormSchema = yup.object({
     username: yup.string().required("Username is required"),
     password: yup.string().required("Password is required")
 });
+
 const githubFormSchema = yup.object({
     gitHubUsername: yup.string().required("Username is required"),
     gitHubPassword: yup.string().required("Password is required")
 });
+
 function SettingsPage() {
     const [initialized, setInitialized] = useState(false);
     const [user, setUser] = useState({});

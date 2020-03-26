@@ -12,8 +12,10 @@ const schema = yup.object({
     username: yup.string().required("Username is required"),
     password: yup.string().required("Password is required")
 });
+
 function SignUpPage() {
     const [redirect, setRedirect] = useState(false);
+
     const handleSubmit = async evt => {
         const isValid = await schema.validate(evt);
         if (!isValid) {
@@ -31,8 +33,8 @@ function SignUpPage() {
     }
     return (
         <>
-            <Navbar bg="primary" expand="lg" variant="dark">
-                <Navbar.Brand href="#home">GitHub App</Navbar.Brand>
+            <Navbar bg="light" expand="lg" variant="light">
+                <Navbar.Brand href="#home">soliGity</Navbar.Brand>
             </Navbar>
             <div className="page">
                 <h1 className="text-center">Sign Up</h1>

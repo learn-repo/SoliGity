@@ -18,17 +18,21 @@ cd EECE-571G
 # Install dependencies for backend
 yarn install
 
+# Setup database (run all the migrations)
+npx sequelize-cli db:migrate
+
 # Go inside the directory for frontend
 cd frontend
 
 # Install dependencies for frontend
 yarn install
 
+# Setup SoliGity contract
+truffle compile
+truffle migrate
+
 # Back to root directory
 cd ..
-
-# Setup database (run all the migrations)
-npx sequelize-cli db:migrate
 
 # Start backend server and frontend
 yarn start

@@ -225,6 +225,7 @@ contract SoliGity {
             msg.sender == _RewardEvent.sponsorAddress,
             "Only issue creator can approve an PR"
         );
+        require(msg.value >= _RewardEvent.bountyAmount, "no sufficient value!");
 
         // change the status of the reward event to - approved
         _RewardEvent.status = eventStatus.approved;
@@ -248,7 +249,7 @@ contract SoliGity {
     }
 
     // reject a reward event
-    function rejectPR(uint256 _eventID) public payable {
+    function rejectPR(uint256 _eventID) public {
         RewardEvent memory _RewardEvent = RewardEvents[_eventID];
         require(
             RewardEvents[_eventID].status == eventStatus.under_review,
@@ -266,7 +267,7 @@ contract SoliGity {
         RewardEvents[_eventID] = _RewardEvent;
 
         // broadcast event to the network
-        emit RewardApproved(
+        emit RewardRejected(
             RewardEvents[_eventID].projectID,
             RewardEvents[_eventID].eventID,
             RewardEvents[_eventID].sponsorID,

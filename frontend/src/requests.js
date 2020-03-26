@@ -8,6 +8,7 @@ axios.interceptors.request.use(
     },
     error => Promise.reject(error)
 );
+
 axios.interceptors.response.use(
     response => {
         return response;
@@ -19,6 +20,7 @@ axios.interceptors.response.use(
         return error;
     }
 );
+
 export const signUp = data => axios.post(`${APIURL}/users/signup`, data);
 
 export const logIn = data => axios.post(`${APIURL}/users/login`, data);
@@ -42,3 +44,7 @@ export const createIssue = data => axios.post(`${APIURL}/github/issue/create`, d
 export const repoFork = data => axios.post(`${APIURL}/github/repo/fork`, data);
 
 export const createPR = data => axios.post(`${APIURL}/github/repo/pr`, data);
+
+export const participate = data => axios.post(`${APIURL}/github/repo/participate`, data);
+
+export const participated = () => axios.get(`${APIURL}/github/repo/participated`);

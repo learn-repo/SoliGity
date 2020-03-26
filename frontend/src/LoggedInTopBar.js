@@ -13,8 +13,8 @@ function LoggedInTopBar({ location }) {
     return (
         <div>
             {isLoggedIn() ? (
-                <Navbar bg="primary" expand="lg" variant="dark">
-                    <Navbar.Brand href="#home">GitHub App</Navbar.Brand>
+                <Navbar bg="light" expand="lg" variant="light">
+                    <Navbar.Brand href="#home">soliGity</Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="mr-auto">
@@ -23,6 +23,9 @@ function LoggedInTopBar({ location }) {
               </Nav.Link>
                             <Nav.Link href="/repos" active={pathname === "/repos"}>
                                 Repos
+              </Nav.Link>
+                            <Nav.Link href="/participated" active={pathname === "/participated"}>
+                                Main
               </Nav.Link>
                             <Nav.Link>
                                 <span

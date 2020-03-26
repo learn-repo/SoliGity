@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { repos, createIssue, repoFork, createPR } from "./requests";
+import { repos, createIssue, repoFork, createPR, participate } from "./requests";
 import Card from "react-bootstrap/Card";
 import { Link } from "react-router-dom";
 import Pagination from "react-bootstrap/Pagination";
@@ -10,6 +10,7 @@ function ReposPage() {
     const [repositories, setRepositories] = useState([]);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
+
     const getRepos = async page => {
         const response = await repos(page);
         setRepositories(response.data.data);
@@ -45,6 +46,11 @@ function ReposPage() {
         const response = await createPR(data);
     }
 
+    const participateRepo = async (fullname) => {
+        let data = { repoPath: fullname }
+        const response = await participate(data);
+    }
+
 
     useEffect(() => {
         if (!initialized) {
@@ -56,15 +62,15 @@ function ReposPage() {
         <div>
             <LoggedInTopBar />
             <h1 className="text-center">Your Repositories</h1>
-            <div className="btn btn-primary" onClick={() => fCreateIssue()}>
+            <div className="btn btn-success" onClick={() => fCreateIssue()}>
                 Create Issue
             </div>
 
-            <div className="btn btn-primary" onClick={() => fRepoFork()}>
+            <div className="btn btn-success" onClick={() => fRepoFork()}>
                 Fork Repo
             </div>
 
-            <div className="btn btn-primary" onClick={() => fCreatePR()}>
+            <div className="btn btn-success" onClick={() => fCreatePR()}>
                 Create Pull Request
             </div>
 
@@ -73,8 +79,11 @@ function ReposPage() {
                     <Card style={{ width: "90vw", margin: "0 auto" }} key={i}>
                         <Card.Body>
                             <Card.Title>{r.name}</Card.Title>
-                            <Link className="btn btn-primary" to={`/commits?repo=${r.full_name}`}>
-                                Go
+                            <Card.Text>{r.description ? r.description : "No Description."}
+                            </Card.Text>
+                            <Link className="btn btn-success" onClick={() => participateRepo(r.full_name)}>
+                                {/* to={`/commits?repo=${r.full_name}`}> */}
+                                Participate
               </Link>
                         </Card.Body>
                     </Card>
