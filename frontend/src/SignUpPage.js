@@ -7,6 +7,7 @@ import { Redirect } from "react-router-dom";
 import * as yup from "yup";
 import { signUp } from "./requests";
 import Navbar from "react-bootstrap/Navbar";
+import Logo from "./assets/logo.png";
 
 const schema = yup.object({
     username: yup.string().required("Username is required"),
@@ -34,8 +35,17 @@ function SignUpPage() {
     return (
         <>
             <Navbar bg="light" expand="lg" variant="light">
-                <Navbar.Brand href="#home">soliGity</Navbar.Brand>
-            </Navbar>
+                <Navbar.Brand href="#home">
+                            <img
+                            src={Logo}
+                            width="174.2"
+                            height="100"
+                            className="d-inline-block align-top"
+                            alt="R
+                            eact Bootstrap logo"
+                            />
+                        </Navbar.Brand>
+                </Navbar>
             <div className="page">
                 <h1 className="text-center">Sign Up</h1>
                 <Formik validationSchema={schema} onSubmit={handleSubmit}>

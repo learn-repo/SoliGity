@@ -9,6 +9,7 @@ import "./HomePage.css";
 import { logIn } from "./requests";
 import { Redirect } from "react-router-dom";
 import Navbar from "react-bootstrap/Navbar";
+import Logo from "./assets/logo.png";
 
 const schema = yup.object({
     username: yup.string().required("Username is required"),
@@ -36,7 +37,16 @@ function HomePage() {
     return (
         <>
             <Navbar bg="light" expand="lg" variant="light">
-                <Navbar.Brand href="#home">soliGity</Navbar.Brand>
+                <Navbar.Brand href="#home">
+                    <img
+                    src={Logo}
+                    width="174.2"
+                    height="100"
+                    className="d-inline-block align-top"
+                    alt="R
+                    eact Bootstrap logo"
+                    />
+                </Navbar.Brand>
             </Navbar>
             <div className="page">
                 <h1 className="text-center">Log In</h1>

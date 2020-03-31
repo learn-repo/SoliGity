@@ -4,15 +4,14 @@ class Test extends Component {
 
     render() {
         return (
-            <div id="content">
-
+            <div id="content" style={{padding: "10px 10px 20px 20px"}}>
                 <h2>Issues</h2>
                 <table className="table">
                     <thead id="itemList">
                         <tr>
                             <th scope="col">#</th>
-                            <th scope="col">Item Name</th>
-                            <th scope="col">Selling Price</th>
+                            <th scope="col">Project Name</th>
+                            <th scope="col">Contribution Allowance</th>
                             <th scope="col">Owner Address</th>
                             <th scope="col">Status</th>
                         </tr>

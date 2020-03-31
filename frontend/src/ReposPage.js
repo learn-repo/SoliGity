@@ -4,6 +4,7 @@ import Card from "react-bootstrap/Card";
 import { Link } from "react-router-dom";
 import Pagination from "react-bootstrap/Pagination";
 import LoggedInTopBar from "./LoggedInTopBar";
+import "./ReposPage.css";
 
 function ReposPage() {
     const [initialized, setInitialized] = useState(false);
@@ -60,20 +61,24 @@ function ReposPage() {
     });
     return (
         <div>
+            
             <LoggedInTopBar />
-            <h1 className="text-center">Your Repositories</h1>
-            <div className="btn btn-success" onClick={() => fCreateIssue()}>
-                Create Issue
-            </div>
+            
+            <div class="menu">
+                <h1 className="text-center">Your Repositories</h1>
+                <div className="btn btn-success" onClick={() => fCreateIssue()}>
+                    Create Issue
+                </div>
 
-            <div className="btn btn-success" onClick={() => fRepoFork()}>
-                Fork Repo
-            </div>
+                <div className="btn btn-success" onClick={() => fRepoFork()}>
+                    Fork Repo
+                </div>
 
-            <div className="btn btn-success" onClick={() => fCreatePR()}>
-                Create Pull Request
+                <div className="btn btn-success" onClick={() => fCreatePR()}>
+                    Create Pull Request
+                </div>
             </div>
-
+            
             {repositories.map((r, i) => {
                 return (
                     <Card style={{ width: "90vw", margin: "0 auto" }} key={i}>
@@ -90,6 +95,7 @@ function ReposPage() {
                 );
             })}
             <br />
+
             <Pagination style={{ width: "90vw", margin: "0 auto" }}>
                 <Pagination.First onClick={() => getRepos(1)} />
                 <Pagination.Prev

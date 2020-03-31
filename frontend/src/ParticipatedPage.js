@@ -46,6 +46,8 @@ function ParticipatedPage(props) {
                                             let title = "test";
                                             let sponsorID = 1;
                                             let sponsorName = "zp";
+
+                                            // We need to call this to keep in sync with the create issue 
                                             await props.createIssue(projectID, title, sponsorID, sponsorName, sellingPrice);
                                         }}>Create Issue</Button>
 
