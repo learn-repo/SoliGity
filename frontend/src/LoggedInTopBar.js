@@ -18,17 +18,17 @@ function LoggedInTopBar({ location }) {
                 <Navbar bg="light" expand="lg" variant="light">
                     <Navbar.Brand href="/participated">
                         <img
-                        src={Logo}
-                        width="174.2"
-                        height="100"
-                        className="d-inline-block align-top"
-                        alt="R
+                            src={Logo}
+                            width="174.2"
+                            height="100"
+                            className="d-inline-block align-top"
+                            alt="R
                         eact Bootstrap logo"
                         />
                     </Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
-                    
+
                         <Nav className="mr-auto">
                             <Nav.Link href="/repos" active={pathname === "/repos"}>
                                 Repos
@@ -40,7 +40,7 @@ function LoggedInTopBar({ location }) {
                                 Settings
                             </Nav.Link>
                         </Nav>
-                            <Nav className="topnav-right">
+                        <Nav className="topnav-right">
                             <Nav.Link>
                                 <span
                                     onClick={() => {

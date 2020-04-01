@@ -1,12 +1,13 @@
 pragma solidity >=0.4.21 <0.7.0;
 
+
 contract SoliGity {
     string public dappName;
     uint256 public eventNumber = 0; // total number of requests
     // event status to keep track of the status of reward event
     /*
     enum explaination
-    no_requst - user has no request now // FIXME: never used
+    no_requst - user has no request now
     help_wanted - user need help and sent a reward event
     under_review - user is reviewing the recent help
                 -> if review been accepted -> eventstatus: approved
@@ -15,19 +16,17 @@ contract SoliGity {
     */
     enum eventStatus {help_wanted, under_review, approved}
 
-    // FIXME: add field title, description(optional)
     struct RewardEvent {
         uint256 projectID; // link project to the event
         uint256 eventID; // event ID to track each event
         string title;
         // sponsor part - problem initiator
-        uint256 sponsorID; // people who sent the request for help or review
         string sponsorName; // sponsor's name/or github ID name
         address sponsorAddress; // sponsor's ETH address
         // bounty hunter part - contributor
-        uint256 bountyHunterID; // people who helped the sponsor to solve the problem
         string bountyHunterName; // bounty hunter's name/or github ID name
         address payable bountyHunterAddress; // bounty hunter's ETH address
+        uint256 PR;
         // reward part
         uint256 bountyAmount; // the amount of money that sponsor are willing to pay
         // track event status
@@ -57,7 +56,6 @@ contract SoliGity {
         uint256 eventID,
         string title,
         // sponsor part - problem initiator
-        uint256 sponsorID,
         string sponsorName,
         address sponsorAddress,
         uint256 bountyAmount, // the amount of money that sponsor are willing to pay
@@ -71,11 +69,9 @@ contract SoliGity {
         uint256 projectID,
         uint256 eventID,
         // sponsor part - problem initiator
-        uint256 sponsorID,
         string sponsorName,
         address sponsorAddress,
         // bounty hunter part - contributor
-        uint256 bountyHunterID,
         string bountyHunterName,
         address payable bountyHunterAddress,
         // amount
@@ -89,11 +85,9 @@ contract SoliGity {
         uint256 projectID,
         uint256 eventID,
         // sponsor part - problem initiator
-        uint256 sponsorID,
         string sponsorName,
         address sponsorAddress,
         // bounty hunter part - contributor
-        uint256 bountyHunterID,
         string bountyHunterName,
         address payable bountyHunterAddress,
         // amount
@@ -107,11 +101,9 @@ contract SoliGity {
         uint256 projectID,
         uint256 eventID,
         // sponsor part - problem initiator
-        uint256 sponsorID,
         string sponsorName,
         address sponsorAddress,
         // bounty hunter part - contributor
-        uint256 bountyHunterID,
         string bountyHunterName,
         address payable bountyHunterAddress,
         // amount
@@ -122,11 +114,9 @@ contract SoliGity {
 
     // functions declearation
     // create a reward event
-    // FIXME: add parameter _title, _description(optional)
     function createIssue(
         uint256 _projectID,
         string memory _title,
-        uint256 _sponsorID,
         string memory _sponsorName,
         uint256 _bountyAmount
     ) public {
@@ -135,7 +125,6 @@ contract SoliGity {
             "Sponsor name should not be empty"
         );
         require(bytes(_title).length > 0, "title should not be empty");
-        require(_sponsorID != 0, "Sponsor ID should not be 0");
         require(_projectID != 0, "Project ID should not be 0");
         require(
             msg.sender.balance >= _bountyAmount,
@@ -149,13 +138,12 @@ contract SoliGity {
             _projectID,
             eventNumber,
             _title,
-            _sponsorID,
             _sponsorName,
             msg.sender,
             // no helper now so all null
-            0,
             "null",
             address(0x0),
+            0,
             _bountyAmount,
             eventStatus.help_wanted
         );
@@ -165,7 +153,6 @@ contract SoliGity {
             _projectID,
             eventNumber,
             _title,
-            _sponsorID,
             _sponsorName,
             msg.sender,
             _bountyAmount,
@@ -176,24 +163,23 @@ contract SoliGity {
     // review a reward event
     function requestReview(
         uint256 _eventID,
-        uint256 _bountyHunterID,
-        string memory _bountyHunterName
+        string memory _bountyHunterName,
+        uint256 _PR
     ) public {
         RewardEvent memory _RewardEvent = RewardEvents[_eventID];
         require(
             bytes(_bountyHunterName).length > 0,
             "Bounty hunter name should not be empty"
         );
-        require(_bountyHunterID != 0, "Bounty hunter ID should not be 0");
         require(
             RewardEvents[_eventID].status == eventStatus.help_wanted,
             "Event shold be help-wanted"
         );
 
         // update bounty hunter info in struct
-        _RewardEvent.bountyHunterID = _bountyHunterID;
         _RewardEvent.bountyHunterName = _bountyHunterName;
         _RewardEvent.bountyHunterAddress = msg.sender;
+        _RewardEvent.PR = _PR;
         _RewardEvent.status = eventStatus.under_review;
         // save it to the struct
         RewardEvents[_eventID] = _RewardEvent;
@@ -202,10 +188,8 @@ contract SoliGity {
         emit requestReviewEvent(
             RewardEvents[_eventID].projectID,
             RewardEvents[_eventID].eventID,
-            RewardEvents[_eventID].sponsorID,
             RewardEvents[_eventID].sponsorName,
             RewardEvents[_eventID].sponsorAddress,
-            RewardEvents[_eventID].bountyHunterID,
             RewardEvents[_eventID].bountyHunterName,
             RewardEvents[_eventID].bountyHunterAddress,
             RewardEvents[_eventID].bountyAmount,
@@ -237,10 +221,8 @@ contract SoliGity {
         emit RewardApproved(
             RewardEvents[_eventID].projectID,
             RewardEvents[_eventID].eventID,
-            RewardEvents[_eventID].sponsorID,
             RewardEvents[_eventID].sponsorName,
             RewardEvents[_eventID].sponsorAddress,
-            RewardEvents[_eventID].bountyHunterID,
             RewardEvents[_eventID].bountyHunterName,
             RewardEvents[_eventID].bountyHunterAddress,
             RewardEvents[_eventID].bountyAmount,
@@ -262,6 +244,9 @@ contract SoliGity {
 
         // change the status of the reward event to - approved
         _RewardEvent.status = eventStatus.help_wanted;
+        _RewardEvent.bountyHunterName = "null";
+        _RewardEvent.bountyHunterAddress = address(0x0);
+        _RewardEvent.PR = 0;
 
         // save it to the struct
         RewardEvents[_eventID] = _RewardEvent;
@@ -270,15 +255,12 @@ contract SoliGity {
         emit RewardRejected(
             RewardEvents[_eventID].projectID,
             RewardEvents[_eventID].eventID,
-            RewardEvents[_eventID].sponsorID,
             RewardEvents[_eventID].sponsorName,
             RewardEvents[_eventID].sponsorAddress,
-            RewardEvents[_eventID].bountyHunterID,
             RewardEvents[_eventID].bountyHunterName,
             RewardEvents[_eventID].bountyHunterAddress,
             RewardEvents[_eventID].bountyAmount,
             RewardEvents[_eventID].status
         );
     }
-
 }

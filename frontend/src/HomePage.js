@@ -39,11 +39,11 @@ function HomePage() {
             <Navbar bg="light" expand="lg" variant="light">
                 <Navbar.Brand href="#home">
                     <img
-                    src={Logo}
-                    width="174.2"
-                    height="100"
-                    className="d-inline-block align-top"
-                    alt="R
+                        src={Logo}
+                        width="174.2"
+                        height="100"
+                        className="d-inline-block align-top"
+                        alt="R
                     eact Bootstrap logo"
                     />
                 </Navbar.Brand>

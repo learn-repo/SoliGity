@@ -1,13 +1,13 @@
-import React, { useState } from "react";
 import { Formik } from "formik";
-import Form from "react-bootstrap/Form";
-import Col from "react-bootstrap/Col";
+import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
+import Col from "react-bootstrap/Col";
+import Form from "react-bootstrap/Form";
+import Navbar from "react-bootstrap/Navbar";
 import { Redirect } from "react-router-dom";
 import * as yup from "yup";
-import { signUp } from "./requests";
-import Navbar from "react-bootstrap/Navbar";
 import Logo from "./assets/logo.png";
+import { signUp } from "./requests";
 
 const schema = yup.object({
     username: yup.string().required("Username is required"),
@@ -36,16 +36,16 @@ function SignUpPage() {
         <>
             <Navbar bg="light" expand="lg" variant="light">
                 <Navbar.Brand href="#home">
-                            <img
-                            src={Logo}
-                            width="174.2"
-                            height="100"
-                            className="d-inline-block align-top"
-                            alt="R
+                    <img
+                        src={Logo}
+                        width="174.2"
+                        height="100"
+                        className="d-inline-block align-top"
+                        alt="R
                             eact Bootstrap logo"
-                            />
-                        </Navbar.Brand>
-                </Navbar>
+                    />
+                </Navbar.Brand>
+            </Navbar>
             <div className="page">
                 <h1 className="text-center">Sign Up</h1>
                 <Formik validationSchema={schema} onSubmit={handleSubmit}>

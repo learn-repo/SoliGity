@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { participated } from "./requests";
-import Card from "react-bootstrap/Card";
-import LoggedInTopBar from "./LoggedInTopBar";
+import React, { useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
-import ButtonToolbar from 'react-bootstrap/ButtonToolbar'
+import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
+import Card from "react-bootstrap/Card";
+import { Link } from "react-router-dom";
+import LoggedInTopBar from "./LoggedInTopBar";
+import { participated } from "./requests";
 
 function ParticipatedPage(props) {
     const [initialized, setInitialized] = useState(false);
@@ -35,49 +36,7 @@ function ParticipatedPage(props) {
                                 <Card.Text>{rc.description}</Card.Text>
                                 <ButtonToolbar>
                                     <Button variant="success" href={rc.url}>Repo Link</Button>
-                                    <Button variant="success"
-                                        onClick={async (event) => {
-                                            event.preventDefault();
-                                            // FIXME: tmp
-                                            // const itemName = this.itemName.value
-                                            let bountyAmount = 2;
-                                            const sellingPrice = window.web3.utils.toWei(bountyAmount.toString(), 'Ether')
-                                            let projectID = 1;
-                                            let title = "test";
-                                            let sponsorID = 1;
-                                            let sponsorName = "zp";
-
-                                            // We need to call this to keep in sync with the create issue 
-                                            await props.createIssue(projectID, title, sponsorID, sponsorName, sellingPrice);
-                                        }}>Create Issue</Button>
-
-                                    <Button variant="success"
-                                        onClick={async (event) => {
-                                            event.preventDefault();
-                                            // FIXME: tmp
-                                            // const itemName = this.itemName.value
-                                            let eventID = 1;
-                                            let bountyHunterID = 1;
-                                            let bountyHunterName = 'daniel';
-                                            await props.requestReview(eventID, bountyHunterID, bountyHunterName);
-                                        }}>Request Review</Button>
-
-                                    <Button variant="success"
-                                        onClick={async (event) => {
-                                            event.preventDefault();
-                                            // FIXME: tmp
-                                            // const itemName = this.itemName.value
-                                            let eventID = 1;
-                                            await props.approvePR(eventID);
-                                        }}>Approve Pull Request</Button>
-                                    <Button variant="success"
-                                        onClick={async (event) => {
-                                            event.preventDefault();
-                                            // FIXME: tmp
-                                            // const itemName = this.itemName.value
-                                            let eventID = 1;
-                                            await props.rejectPR(eventID);
-                                        }}>Reject Pull Request</Button>
+                                    <Link className="btn btn-primary" to={`/repo?repo=${rc.name}&?owner=${rc.owner}`}>Go</Link>
                                 </ButtonToolbar>
                             </Card.Body>
                         </Card>

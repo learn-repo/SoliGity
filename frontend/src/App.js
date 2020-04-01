@@ -1,18 +1,18 @@
-import React, { Component } from "react";
-import HomePage from "./HomePage";
-import "./App.css";
-import ReposPage from "./ReposPage";
-import ParticipatedPage from "./ParticipatedPage";
-import SettingsPage from "./SettingsPage";
 import { createBrowserHistory as createHistory } from "history";
-import { Router, Route } from "react-router-dom";
-import SignUpPage from "./SignUpPage";
-import RequireAuth from "./RequireAuth";
+import React, { Component } from "react";
+import { Route, Router } from "react-router-dom";
 import Web3 from 'web3';
 import SoliGity from './abis/SoliGity';
-
 import Addressbar from './Addressbar';
-import Test from "./Test";
+import "./App.css";
+import HomePage from "./HomePage";
+import ParticipatedPage from "./ParticipatedPage";
+import RepoPage from "./RepoPage";
+import ReposPage from "./ReposPage";
+import RequireAuth from "./RequireAuth";
+import SettingsPage from "./SettingsPage";
+import SignUpPage from "./SignUpPage";
+
 
 const history = createHistory();
 
@@ -68,63 +68,10 @@ class App extends Component {
     }
   }
 
-  createIssue = async (projectID, title, sponsorID, sponsorName, bountyAmount) => {
-    this.setState({ loading: true });
-    const gasAmount = await this.state.deployedSoliGity.methods.createIssue(projectID, title, sponsorID, sponsorName, bountyAmount).estimateGas({ from: this.state.account });
-    this.state.deployedSoliGity.methods.createIssue(projectID, title, sponsorID, sponsorName, bountyAmount).send({ from: this.state.account, gas: gasAmount })
-      .once('receipt', (receipt) => {
-        this.setState({ loading: false });
-      })
-  }
-
-  requestReview = async (eventID, bountyHunterID, bountyHunterName) => {
-    this.setState({ loading: true });
-    const gasAmount = await this.state.deployedSoliGity.methods.requestReview(eventID, bountyHunterID, bountyHunterName).estimateGas({ from: this.state.account });
-    this.state.deployedSoliGity.methods.requestReview(eventID, bountyHunterID, bountyHunterName).send({ from: this.state.account, gas: gasAmount })
-      .once('receipt', (receipt) => {
-        this.setState({ loading: false });
-      })
-  }
-
-  approvePR = async (eventID) => {
-    // let price = 2; // FIXME: ??
-    let price = window.web3.utils.toWei("2", 'Ether')
-    console.log(price);
-    this.setState({ loading: true });
-    const gasAmount = await this.state.deployedSoliGity.methods.approvePR(eventID).estimateGas({ from: this.state.account, value: price });
-    this.state.deployedSoliGity.methods.approvePR(eventID).send({ from: this.state.account, gas: gasAmount, value: price })
-      .once('receipt', (receipt) => {
-        this.setState({ loading: false });
-      })
-  }
-
-  rejectPR = async (eventID) => {
-    this.setState({ loading: true });
-    const gasAmount = await this.state.deployedSoliGity.methods.rejectPR(eventID).estimateGas({ from: this.state.account });
-    this.state.deployedSoliGity.methods.rejectPR(eventID).send({ from: this.state.account, gas: gasAmount })
-      .once('receipt', (receipt) => {
-        this.setState({ loading: false });
-      })
-  }
-
   render() {
     return (
       <div className="App">
         <Addressbar account={this.state.account} />
-        <div className="container-fluid mt-5">
-          <div className="row">
-            <test>
-              {this.state.loading
-                ?
-                <div><p className="text-center">Loading ...</p></div>
-                :
-                <Test rewardEvents={this.state.rewardEvents}
-                  createIssue={this.createIssue}
-                  buyItem={this.buyItem}
-                />}
-            </test>
-          </div>
-        </div>
         <Router history={history}>
           <Route path="/" exact component={HomePage} />
           <Route path="/signup" exact component={SignUpPage} />
@@ -142,11 +89,13 @@ class App extends Component {
           <Route
             path="/participated"
             exact
-            render={props => < ParticipatedPage {...props}
-              createIssue={this.createIssue}
-              requestReview={this.requestReview}
-              approvePR={this.approvePR}
-              rejectPR={this.rejectPR} />}
+            component={props => <RequireAuth {...props} Component={ParticipatedPage} />}
+          />
+
+          <Route
+            path="/repo"
+            exact
+            component={props => <RequireAuth {...props} Component={RepoPage} />}
           />
         </Router>
       </div >

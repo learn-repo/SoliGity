@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { repos, createIssue, repoFork, createPR, participate } from "./requests";
+import React, { useEffect, useState } from "react";
 import Card from "react-bootstrap/Card";
-import { Link } from "react-router-dom";
 import Pagination from "react-bootstrap/Pagination";
+import { Link } from "react-router-dom";
 import LoggedInTopBar from "./LoggedInTopBar";
 import "./ReposPage.css";
+import { participate, repos } from "./requests";
 
 function ReposPage() {
     const [initialized, setInitialized] = useState(false);
@@ -18,40 +18,10 @@ function ReposPage() {
         setTotalPages(Math.ceil(response.data.size / response.data.pagelen));
     };
 
-    const fCreateIssue = async () => {
-        let data = {
-            owner: "soligity2",
-            repo: "test3",
-            title: "test test",
-            body: "test test test test test"
-        }
-        const response = await createIssue(data);
-    }
-
-    const fRepoFork = async () => {
-        let data = {
-            owner: "soligity2",
-            repo: "test4",
-        }
-        const response = await repoFork(data);
-    }
-
-    const fCreatePR = async () => {
-        let data = {
-            owner: "soligity2",
-            repo: "test4",
-            title: "okok",
-            head: "soligity1:master",
-            base: "master"
-        }
-        const response = await createPR(data);
-    }
-
     const participateRepo = async (fullname) => {
         let data = { repoPath: fullname }
         const response = await participate(data);
     }
-
 
     useEffect(() => {
         if (!initialized) {
@@ -61,24 +31,9 @@ function ReposPage() {
     });
     return (
         <div>
-            
+
             <LoggedInTopBar />
-            
-            <div class="menu">
-                <h1 className="text-center">Your Repositories</h1>
-                <div className="btn btn-success" onClick={() => fCreateIssue()}>
-                    Create Issue
-                </div>
 
-                <div className="btn btn-success" onClick={() => fRepoFork()}>
-                    Fork Repo
-                </div>
-
-                <div className="btn btn-success" onClick={() => fCreatePR()}>
-                    Create Pull Request
-                </div>
-            </div>
-            
             {repositories.map((r, i) => {
                 return (
                     <Card style={{ width: "90vw", margin: "0 auto" }} key={i}>
@@ -87,7 +42,6 @@ function ReposPage() {
                             <Card.Text>{r.description ? r.description : "No Description."}
                             </Card.Text>
                             <Link className="btn btn-success" onClick={() => participateRepo(r.full_name)}>
-                                {/* to={`/commits?repo=${r.full_name}`}> */}
                                 Participate
               </Link>
                         </Card.Body>
