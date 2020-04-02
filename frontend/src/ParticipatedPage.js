@@ -1,5 +1,4 @@
 import { Component, default as React } from "react";
-
 import Button from "react-bootstrap/Button";
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
 import Card from "react-bootstrap/Card";
@@ -7,6 +6,7 @@ import { Link } from "react-router-dom";
 import Web3 from 'web3';
 import SoliGity from './abis/SoliGity';
 import LoggedInTopBar from "./LoggedInTopBar";
+
 
 class ParticipatedPage extends Component {
     state = {

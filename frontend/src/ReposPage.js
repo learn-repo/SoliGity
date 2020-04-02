@@ -2,11 +2,11 @@ import { Component, default as React } from "react";
 import Card from "react-bootstrap/Card";
 import Pagination from "react-bootstrap/Pagination";
 import { Link } from "react-router-dom";
+import Web3 from 'web3';
+import SoliGity from './abis/SoliGity';
 import LoggedInTopBar from "./LoggedInTopBar";
 import "./ReposPage.css";
 import { repos } from "./requests";
-import Web3 from 'web3';
-import SoliGity from './abis/SoliGity';
 
 class ReposPage extends Component {
     state = {

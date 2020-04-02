@@ -9,7 +9,7 @@ import Web3 from 'web3';
 import * as yup from "yup";
 import SoliGity from './abis/SoliGity';
 import LoggedInTopBar from "./LoggedInTopBar";
-import { createIssue, createPullRequest, currentUser, forkRepo, closePullRequest, approvePullRequest } from "./requests";
+import { approvePullRequest, closePullRequest, createIssue, createPullRequest, currentUser, forkRepo } from "./requests";
 
 const moment = require("moment");
 const querystring = require("querystring");

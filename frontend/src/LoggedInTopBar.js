@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import Navbar from "react-bootstrap/Navbar";
-import "./LoggedInTopBar.css";
 import Nav from "react-bootstrap/Nav";
-import { withRouter, Redirect } from "react-router-dom";
+import Navbar from "react-bootstrap/Navbar";
+import { Redirect, withRouter } from "react-router-dom";
 import Logo from "./assets/logo.png";
+import "./LoggedInTopBar.css";
 
 function LoggedInTopBar({ location }) {
     const [redirect, setRedirect] = useState(false);

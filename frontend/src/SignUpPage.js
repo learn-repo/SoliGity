@@ -89,9 +89,7 @@ function SignUpPage() {
                                         </Form.Control.Feedback>
                                     </Form.Group>
                                 </Form.Row>
-                                <Button type="submit" style={{ marginRight: "10px" }}>
-                                    Sign Up
-              </Button>
+                                <Button type="submit" style={{ marginRight: "10px" }}>Sign Up</Button>
                             </Form>
                         )}
                 </Formik>

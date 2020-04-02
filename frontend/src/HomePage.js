@@ -1,15 +1,14 @@
-import React, { useState } from "react";
 import { Formik } from "formik";
-import Form from "react-bootstrap/Form";
-import Col from "react-bootstrap/Col";
+import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
-import { Link } from "react-router-dom";
+import Col from "react-bootstrap/Col";
+import Form from "react-bootstrap/Form";
+import Navbar from "react-bootstrap/Navbar";
+import { Link, Redirect } from "react-router-dom";
 import * as yup from "yup";
+import Logo from "./assets/logo.png";
 import "./HomePage.css";
 import { logIn } from "./requests";
-import { Redirect } from "react-router-dom";
-import Navbar from "react-bootstrap/Navbar";
-import Logo from "./assets/logo.png";
 
 const schema = yup.object({
     username: yup.string().required("Username is required"),
