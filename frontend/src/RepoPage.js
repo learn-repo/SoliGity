@@ -9,7 +9,7 @@ import Web3 from 'web3';
 import * as yup from "yup";
 import SoliGity from './abis/SoliGity';
 import LoggedInTopBar from "./LoggedInTopBar";
-import { createIssue, createPullRequest, currentUser, repoInfo, forkRepo, closePullRequest, approvePullRequest } from "./requests";
+import { createIssue, createPullRequest, currentUser, forkRepo, closePullRequest, approvePullRequest } from "./requests";
 
 const moment = require("moment");
 const querystring = require("querystring");
@@ -32,12 +32,10 @@ class RepoPage extends Component {
     }
 
     async componentDidMount() {
+        const name = querystring.decode(window.location.search)["?repo"];
+        const owner = querystring.decode(window.location.search)["?owner"];
         await this.getWeb3Provider();
-        await this.connectToBlockchain();
-        const repoName = querystring.decode(window.location.search)["?repo"];
-        const repoOwner = querystring.decode(window.location.search)["?owner"];
-        const response = await repoInfo(repoOwner, repoName);
-        this.setState({ info: response.data[0] });
+        await this.connectToBlockchain(name, owner);
         this.state.initialized = true;
     }
 
@@ -54,7 +52,7 @@ class RepoPage extends Component {
         }
     }
 
-    async connectToBlockchain() {
+    async connectToBlockchain(name, owner) {
         const web3 = window.web3;
         const accounts = await web3.eth.getAccounts();
         this.setState({ account: accounts[0] })
@@ -64,7 +62,6 @@ class RepoPage extends Component {
             const deployedSoliGity = new web3.eth.Contract(SoliGity.abi, networkData.address);
             this.setState({ deployedSoliGity: deployedSoliGity });
             const eventNumber = await deployedSoliGity.methods.eventNumber().call();
-            console.log(`eventNumber: ${eventNumber}`);
             this.setState({ eventNumber });
 
             for (var i = 1; i <= eventNumber; i++) {
@@ -73,7 +70,16 @@ class RepoPage extends Component {
                     rewardEvents: [...this.state.rewardEvents, event]
                 });
             }
+            const projectNumber = await deployedSoliGity.methods.projectNumber().call();
+
+            for (var i = 1; i <= projectNumber; i++) {
+                const event = await deployedSoliGity.methods.Projects(i).call();
+                if (event.name === name && event.owner === owner) {
+                    this.setState({ info: event });
+                }
+            }
             this.setState({ loading: false })
+            console.log(this.state.info);
             console.log(this.state.rewardEvents);
         } else {
             window.alert('SoliGity contract is not found in your blockchain.')
@@ -81,7 +87,6 @@ class RepoPage extends Component {
     }
 
     handleSubmit = async (evt) => {
-
         const isValid = await schema.validate(evt);
         if (!isValid) {
             return;
@@ -92,7 +97,7 @@ class RepoPage extends Component {
             const title = evt.title;
             const description = evt.description;
             let bountyAmount = Number(evt.bountyAmount);
-            const projectID = this.state.info.id;
+            const projectID = Number(this.state.info.ProjectID);
             let user = await currentUser();
             const sponsorName = user.data.gitHubUsername;
             if (isNaN(bountyAmount) || isNaN(projectID)) {
@@ -179,7 +184,7 @@ class RepoPage extends Component {
                             :
                             <test>
                                 {this.state.rewardEvents.filter((r) => {
-                                    return r.projectID === this.state.info.id.toString();
+                                    return r.projectID === this.state.info.ProjectID.toString();
                                 }).map(rc => {
                                     return (
                                         <Card style={{ width: "90vw", margin: "0 auto" }}>

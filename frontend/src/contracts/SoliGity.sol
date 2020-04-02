@@ -5,6 +5,7 @@ contract SoliGity {
     string public dappName;
     uint256 public eventNumber = 0; // total number of requests
     // event status to keep track of the status of reward event
+    uint256 public projectNumber = 0;
     /*
     enum explaination
     no_requst - user has no request now
@@ -33,9 +34,18 @@ contract SoliGity {
         eventStatus status; // defined in event status
     }
 
+    struct Project {
+        uint256 ProjectID;
+        string owner;
+        string name;
+        string description;
+        string url;
+    }
+
     // mapping adress to reward events - type public
     // use uint256 => RewardEvent because one user can send multiple reward events
     mapping(uint256 => RewardEvent) public RewardEvents;
+    mapping(uint256 => Project) public Projects;
 
     // constructor initalization
     constructor() public {
@@ -49,6 +59,14 @@ contract SoliGity {
     3. approve an issue
     4. reject an issue
     */
+
+    event createProjectEvent(
+        uint256 ProjectID,
+        string owner,
+        string name,
+        string description,
+        string url
+    );
 
     // event creation broadcast
     event createIssueEvent(
@@ -158,6 +176,31 @@ contract SoliGity {
             _bountyAmount,
             eventStatus.help_wanted
         );
+    }
+
+    function createProject(
+        string memory owner,
+        string memory name,
+        string memory description,
+        string memory url
+    ) public {
+        require(bytes(owner).length > 0, "owner should not be empty");
+        require(bytes(name).length > 0, "name should not be empty");
+        require(
+            bytes(description).length > 0,
+            "description should not be empty"
+        );
+        require(bytes(url).length > 0, "url should not be empty");
+        projectNumber++;
+        Projects[projectNumber] = Project(
+            projectNumber,
+            owner,
+            name,
+            description,
+            url
+        );
+
+        emit createProjectEvent(projectNumber, owner, name, description, url);
     }
 
     // review a reward event

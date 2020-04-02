@@ -29,15 +29,6 @@ router.post("/setGithubCredentials", authCheck, async (req, res, next) => {
     res.json({});
 });
 
-router.get("/repos/participated", async (req, res, next) => {
-    try {
-        const data = await models.Repo.findAll({ attributes: ['owner', 'name', "url", "description"] });
-        res.json(data);
-    } catch (error) {
-        res.status(400).json(error);
-    }
-});
-
 router.get("/repos/:page", authCheck, async (req, res, next) => {
     const page = req.params.page || 1;
     const token = req.headers.authorization;
@@ -224,59 +215,6 @@ router.post("/repo/pr", authCheck, async (req, res, next) => {
         base
     });
     res.json(data);
-});
-
-
-router.post("/repo/participate", authCheck, async (req, res, next) => {
-    try {
-        const { repoPath } = req.body;
-        const token = req.headers.authorization;
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const id = decoded.userId;
-        const users = await models.User.findAll({ where: { id } });
-        const user = users[0];
-        const bytes = CryptoJS.AES.decrypt(
-            user.gitHubPassword.toString(),
-            process.env.CRYPTO_SECRET
-        );
-        const password = bytes.toString(CryptoJS.enc.Utf8);
-        const octokit = new Octokit({
-            auth: {
-                username: user.gitHubUsername,
-                password
-            }
-        });
-        const [owner, repo] = repoPath.split("/");
-        const response = await octokit.repos.get({
-            owner,
-            repo
-        });
-
-        const data = await models.Repo.create({
-            owner: response.data.owner.login,
-            name: response.data.name,
-            url: response.data.html_url,
-            description: response.data.description ? response.data.description : ""
-        })
-        res.json(data);
-    } catch (error) {
-        res.status(400).json(error);
-    }
-});
-
-
-router.get("/repo/participated/:owner/:name", async (req, res, next) => {
-    try {
-        const data = await models.Repo.findAll({
-            where: {
-                owner: req.params.owner,
-                name: req.params.name
-            }
-        }, { attributes: ['id', 'owner', 'name', "url", "description"] });
-        res.json(data);
-    } catch (error) {
-        res.status(400).json(error);
-    }
 });
 
 module.exports = router;

@@ -48,9 +48,3 @@ export const createPullRequest = data => axios.post(`${APIURL}/github/repo/pr`, 
 export const closePullRequest = data => axios.post(`${APIURL}/github/repo/pr/close`, data);
 
 export const approvePullRequest = data => axios.post(`${APIURL}/github/repo/pr/approve`, data);
-
-export const participate = data => axios.post(`${APIURL}/github/repo/participate`, data);
-
-export const participated = () => axios.get(`${APIURL}/github/repos/participated`);
-
-export const repoInfo = (owner, name) => axios.get(`${APIURL}/github/repo/participated/${owner}/${name}`);
