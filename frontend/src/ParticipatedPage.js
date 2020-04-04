@@ -1,11 +1,12 @@
 import { Component, default as React } from "react";
 import Button from "react-bootstrap/Button";
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
-import Card from "react-bootstrap/Card";
+import Jumbotron from "react-bootstrap/Jumbotron";
 import { Link } from "react-router-dom";
 import Web3 from 'web3';
 import SoliGity from './abis/SoliGity';
 import LoggedInTopBar from "./LoggedInTopBar";
+import "./ParticipatedPage.css";
 
 
 class ParticipatedPage extends Component {
@@ -62,23 +63,27 @@ class ParticipatedPage extends Component {
             <>
                 <LoggedInTopBar />
                 <div className="page">
-                    <h1 className="text-center">Participated Repositories</h1>
+                    <div>
+                        <h1 class="display-4">Participated Repositories</h1>
+                        <p class="lead">These are the projects you are currently working on.</p>
+                        <hr class="my-4"></hr>
+                    </div>
                     {this.state.participated.map(rc => {
                         return (
-                            <Card style={{ width: "90vw", margin: "0 auto" }}>
-                                <Card.Body>
-                                    <Card.Title>{rc.name}</Card.Title>
-                                    <p>Owner: {rc.owner}</p>
-                                    <Card.Text>{rc.description}</Card.Text>
-                                    <ButtonToolbar>
-                                        <Button variant="success" href={rc.url}>Repo Link</Button>
-                                        <Link className="btn btn-primary" to={`/repo?repo=${rc.name}&?owner=${rc.owner}`}>Go</Link>
-                                    </ButtonToolbar>
-                                </Card.Body>
-                            </Card>
+                            <Jumbotron>
+                                <h1>{rc.name}</h1>
+                                <p> {rc.description}</p>
+                                <p>
+                                    <Link className="btn btn-primary" to={`/repo?repo=${rc.name}&?owner=${rc.owner}`}>View Project</Link>
+                                    <Button variant="success" href={rc.url}>Link to Repository</Button>
+                                </p>
+                            </Jumbotron>
+                            
                         );
                     })}
                 </div>
+
+            
             </>
         );
     }

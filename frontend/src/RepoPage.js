@@ -3,6 +3,7 @@ import { Component, default as React } from "react";
 import Button from "react-bootstrap/Button";
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
 import Card from "react-bootstrap/Card";
+import Jumbotron from "react-bootstrap/Jumbotron";
 import Form from "react-bootstrap/Form";
 import { withRouter } from "react-router-dom";
 import Web3 from 'web3';
@@ -128,8 +129,7 @@ class RepoPage extends Component {
                 {this.state.info ?
                     <div className="page">
                         <h1 className="text-center">{this.state.info.name}</h1>
-
-                        <Button variant="success" href={this.state.info.url}>Repo Link</Button>
+                        <Button variant="success" href={this.state.info.url}>Link to Repository</Button>
                         <Button variant="success"
                             onClick={async (event) => {
                                 event.preventDefault();
