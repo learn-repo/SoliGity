@@ -76,8 +76,12 @@ class ReposPage extends Component {
                                         const url = r.html_url;
                                         event.preventDefault();
                                         this.setState({ loading: true });
-                                        const gasAmount = await this.state.deployedSoliGity.methods.createProject(owner, repo, description, url).estimateGas({ from: this.state.account });
-                                        this.state.deployedSoliGity.methods.createProject(owner, repo, description, url).send({ from: this.state.account, gas: gasAmount })
+                                        const gasAmount = await this.state.deployedSoliGity.methods
+                                            .createProject(owner, repo, description, url)
+                                            .estimateGas({ from: this.state.account });
+                                        this.state.deployedSoliGity.methods
+                                            .createProject(owner, repo, description, url)
+                                            .send({ from: this.state.account, gas: gasAmount })
                                             .once('receipt', async (receipt) => {
                                                 this.setState({ loading: false });
                                             })

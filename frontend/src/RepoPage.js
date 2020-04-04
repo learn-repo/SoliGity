@@ -10,7 +10,7 @@ import Web3 from 'web3';
 import * as yup from "yup";
 import SoliGity from './abis/SoliGity';
 import LoggedInTopBar from "./LoggedInTopBar";
-import { approvePullRequest, closePullRequest, createIssue, createPullRequest, currentUser, forkRepo } from "./requests";
+import { approvePullRequest, closePullRequest, createIssue, createPullRequest, currentUser, forkRepo, closeIssue } from "./requests";
 
 const moment = require("moment");
 const querystring = require("querystring");
@@ -63,8 +63,9 @@ class RepoPage extends Component {
             const eventNumber = await deployedSoliGity.methods.eventNumber().call();
             this.setState({ eventNumber });
 
+            this.setState({ rewardEvents: [] });
             for (var i = 1; i <= eventNumber; i++) {
-                const event = await deployedSoliGity.methods.RewardEvents(i).call();
+                const event = await deployedSoliGity.methods.rewardEvents(i).call();
                 this.setState({
                     rewardEvents: [...this.state.rewardEvents, event]
                 });
@@ -72,11 +73,12 @@ class RepoPage extends Component {
             const projectNumber = await deployedSoliGity.methods.projectNumber().call();
 
             for (var i = 1; i <= projectNumber; i++) {
-                const event = await deployedSoliGity.methods.Projects(i).call();
+                const event = await deployedSoliGity.methods.projects(i).call();
                 if (event.name === name && event.owner === owner) {
                     this.setState({ info: event });
                 }
             }
+            console.log(this.state.info);
             this.setState({ loading: false })
         } else {
             window.alert('SoliGity contract is not found in your blockchain.')
@@ -94,27 +96,33 @@ class RepoPage extends Component {
             const title = evt.title;
             const description = evt.description;
             let bountyAmount = Number(evt.bountyAmount);
-            const projectID = Number(this.state.info.ProjectID);
+            const projectId = Number(this.state.info.id);
             let user = await currentUser();
+            let data = {
+                owner: this.state.info.owner,
+                repo: this.state.info.name,
+                title: title,
+                body: description
+            }
+            const response = await createIssue(data);
+            let issue = Number(response.data.data.number);
             const sponsorName = user.data.gitHubUsername;
-            if (isNaN(bountyAmount) || isNaN(projectID)) {
+            if (isNaN(bountyAmount) || isNaN(projectId) || isNaN(issue)) {
                 throw new Error("invalid");
             }
             bountyAmount = window.web3.utils.toWei(bountyAmount.toString(), 'Ether');
-            const gasAmount = await this.state.deployedSoliGity.methods.createIssue(projectID, title, sponsorName, bountyAmount).estimateGas({ from: this.state.account });
-            this.state.deployedSoliGity.methods.createIssue(projectID, title, sponsorName, bountyAmount).send({ from: this.state.account, gas: gasAmount })
+            const gasAmount = await this.state.deployedSoliGity.methods
+                .createIssue(projectId, title, sponsorName, bountyAmount, issue)
+                .estimateGas({ from: this.state.account });
+            this.state.deployedSoliGity.methods
+                .createIssue(projectId, title, sponsorName, bountyAmount, issue)
+                .send({ from: this.state.account, gas: gasAmount })
                 .once('receipt', async (receipt) => {
-                    let data = {
-                        owner: this.state.info.owner,
-                        repo: this.state.info.name,
-                        title: title,
-                        body: description
-                    }
-                    const response = await createIssue(data);
                     await this.componentDidMount();
                     this.setState({ loading: false });
                 })
         } catch (ex) {
+            console.log(ex);
             alert("Fail to create Issue!");
             this.setState({ loading: false });
         }
@@ -182,19 +190,20 @@ class RepoPage extends Component {
                             :
                             <test>
                                 {this.state.rewardEvents.filter((r) => {
-                                    return r.projectID === this.state.info.ProjectID.toString();
+                                    return r.projectId === this.state.info.id.toString();
                                 }).map(rc => {
                                     return (
                                         <Card style={{ width: "90vw", margin: "0 auto" }}>
                                             <Card.Body>
                                                 <Card.Title>{rc.title}</Card.Title>
-                                                <Card.Text>eventID: {rc.eventID}</Card.Text>
-                                                <Card.Text>projectID: {rc.projectID}</Card.Text>
+                                                <Card.Text>eventId: {rc.eventId}</Card.Text>
+                                                <Card.Text>projectId: {rc.projectId}</Card.Text>
                                                 <Card.Text>sponsorName: {rc.sponsorName}</Card.Text>
                                                 <Card.Text>sponsorAddress: {rc.sponsorAddress}</Card.Text>
                                                 <Card.Text>bountyHunterName: {rc.bountyHunterName}</Card.Text>
                                                 <Card.Text>bountyHunterAddress: {rc.bountyHunterAddress}</Card.Text>
-                                                <Card.Text>PR #: {rc.PR}</Card.Text>
+                                                <Card.Text>PR #: {rc.pullRequest}</Card.Text>
+                                                <Card.Text>Issue #: {rc.issue}</Card.Text>
                                                 <Card.Text>bountyAmount: {window.web3.utils.fromWei(rc.bountyAmount.toString(), 'Ether')} ETH</Card.Text>
                                                 <Card.Text>status: {rc.status}</Card.Text>
 
@@ -216,16 +225,19 @@ class RepoPage extends Component {
                                                                 }
 
                                                                 const response = await createPullRequest(data);
-                                                                let eventID = rc.eventID;
+                                                                let eventId = rc.eventId;
                                                                 let PR = response.data.data.number;
                                                                 this.setState({ loading: true });
-                                                                const gasAmount = await this.state.deployedSoliGity.methods.requestReview(eventID, bountyHunterName, PR).estimateGas({ from: this.state.account });
-                                                                this.state.deployedSoliGity.methods.requestReview(eventID, bountyHunterName, PR).send({ from: this.state.account, gas: gasAmount })
+                                                                const gasAmount = await this.state.deployedSoliGity.methods
+                                                                    .requestReview(eventId, bountyHunterName, PR)
+                                                                    .estimateGas({ from: this.state.account });
+                                                                this.state.deployedSoliGity.methods
+                                                                    .requestReview(eventId, bountyHunterName, PR)
+                                                                    .send({ from: this.state.account, gas: gasAmount })
                                                                     .once('receipt', async (receipt) => {
                                                                         await this.componentDidMount();
                                                                         this.setState({ loading: false });
                                                                     })
-
                                                             } catch (ex) {
                                                                 alert("Fail to create Pull & Request!");
                                                                 this.setState({ loading: false });
@@ -236,18 +248,28 @@ class RepoPage extends Component {
                                                         onClick={async (event) => {
                                                             event.preventDefault();
                                                             try {
-                                                                let eventID = rc.eventID;
+                                                                let eventId = rc.eventId;
                                                                 let price = rc.bountyAmount;
                                                                 this.setState({ loading: true });
-                                                                const gasAmount = await this.state.deployedSoliGity.methods.approvePR(eventID).estimateGas({ from: this.state.account, value: price });
-                                                                this.state.deployedSoliGity.methods.approvePR(eventID).send({ from: this.state.account, gas: gasAmount, value: price })
+                                                                const gasAmount = await this.state.deployedSoliGity.methods
+                                                                    .approvePullRequest(eventId)
+                                                                    .estimateGas({ from: this.state.account, value: price });
+                                                                this.state.deployedSoliGity.methods
+                                                                    .approvePullRequest(eventId)
+                                                                    .send({ from: this.state.account, gas: gasAmount, value: price })
                                                                     .once('receipt', async (receipt) => {
                                                                         let data = {
                                                                             owner: this.state.info.owner,
                                                                             repo: this.state.info.name,
-                                                                            pull_number: rc.PR
+                                                                            pull_number: rc.pullRequest
                                                                         }
                                                                         await approvePullRequest(data);
+                                                                        data = {
+                                                                            owner: this.state.info.owner,
+                                                                            repo: this.state.info.name,
+                                                                            issue_number: rc.issue
+                                                                        }
+                                                                        await closeIssue(data);
                                                                         await this.componentDidMount();
                                                                         this.setState({ loading: false });
                                                                     })
@@ -260,15 +282,19 @@ class RepoPage extends Component {
                                                         onClick={async (event) => {
                                                             event.preventDefault();
                                                             try {
-                                                                let eventID = rc.eventID;
+                                                                let eventId = rc.eventId;
                                                                 this.setState({ loading: true });
-                                                                const gasAmount = await this.state.deployedSoliGity.methods.rejectPR(eventID).estimateGas({ from: this.state.account });
-                                                                this.state.deployedSoliGity.methods.rejectPR(eventID).send({ from: this.state.account, gas: gasAmount })
+                                                                const gasAmount = await this.state.deployedSoliGity.methods
+                                                                    .rejectPullRequest(eventId)
+                                                                    .estimateGas({ from: this.state.account });
+                                                                this.state.deployedSoliGity.methods
+                                                                    .rejectPullRequest(eventId)
+                                                                    .send({ from: this.state.account, gas: gasAmount })
                                                                     .once('receipt', async (receipt) => {
                                                                         let data = {
                                                                             owner: this.state.info.owner,
                                                                             repo: this.state.info.name,
-                                                                            pull_number: rc.PR
+                                                                            pull_number: rc.pullRequest
                                                                         }
                                                                         await closePullRequest(data);
                                                                         await this.componentDidMount();

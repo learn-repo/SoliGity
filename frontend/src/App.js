@@ -56,7 +56,7 @@ class App extends Component {
       this.setState({ eventNumber });
 
       for (var i = 1; i <= eventNumber; i++) {
-        const event = await deployedSoliGity.methods.RewardEvents(i).call();
+        const event = await deployedSoliGity.methods.rewardEvents(i).call();
         this.setState({
           rewardEvents: [...this.state.rewardEvents, event]
         });
