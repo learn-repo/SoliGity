@@ -34,11 +34,9 @@ class ReposPage extends Component {
         if (window.ethereum) {
             window.web3 = new Web3(window.ethereum);
             await window.ethereum.enable();
-        }
-        else if (window.web3) {
+        } else if (window.web3) {
             window.web3 = new Web3(window.web3.currentProvider);
-        }
-        else {
+        } else {
             window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!');
         }
     }
@@ -71,17 +69,21 @@ class ReposPage extends Component {
                                 <Card.Text>{r.description ? r.description : "No Description."}
                                 </Card.Text>
                                 <Link className="btn btn-success" onClick={async (event) => {
-                                    console.log(r);
-                                    const [owner, repo] = r.full_name.split("/");
-                                    const description = r.description || "No Description";
-                                    const url = r.url;
-                                    event.preventDefault();
-                                    this.setState({ loading: true });
-                                    const gasAmount = await this.state.deployedSoliGity.methods.createProject(owner, repo, description, url).estimateGas({ from: this.state.account });
-                                    this.state.deployedSoliGity.methods.createProject(owner, repo, description, url).send({ from: this.state.account, gas: gasAmount })
-                                        .once('receipt', (receipt) => {
-                                            this.setState({ loading: false });
-                                        })
+                                    try {
+                                        const [owner, repo] = r.full_name.split("/");
+                                        const description = r.description || "No Description";
+                                        const url = r.url;
+                                        event.preventDefault();
+                                        this.setState({ loading: true });
+                                        const gasAmount = await this.state.deployedSoliGity.methods.createProject(owner, repo, description, url).estimateGas({ from: this.state.account });
+                                        this.state.deployedSoliGity.methods.createProject(owner, repo, description, url).send({ from: this.state.account, gas: gasAmount })
+                                            .once('receipt', async (receipt) => {
+                                                this.setState({ loading: false });
+                                            })
+                                    } catch (ex) {
+                                        alert(ex.message);
+                                        this.setState({ loading: false });
+                                    }
                                 }}>
                                     Participate
               </Link>

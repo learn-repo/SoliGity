@@ -11,6 +11,7 @@ import LoggedInTopBar from "./LoggedInTopBar";
 class ParticipatedPage extends Component {
     state = {
         initialized: false,
+        loading: true,
         projectNumber: 0,
         participated: []
     }
@@ -25,11 +26,9 @@ class ParticipatedPage extends Component {
         if (window.ethereum) {
             window.web3 = new Web3(window.ethereum);
             await window.ethereum.enable();
-        }
-        else if (window.web3) {
+        } else if (window.web3) {
             window.web3 = new Web3(window.web3.currentProvider);
-        }
-        else {
+        } else {
             window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!');
         }
     }
@@ -53,7 +52,6 @@ class ParticipatedPage extends Component {
                 });
             }
             this.setState({ loading: false })
-            console.log(this.state.participated);
         } else {
             window.alert('SoliGity contract is not found in your blockchain.')
         }
