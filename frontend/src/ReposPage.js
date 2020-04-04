@@ -72,7 +72,8 @@ class ReposPage extends Component {
                                     try {
                                         const [owner, repo] = r.full_name.split("/");
                                         const description = r.description || "No Description";
-                                        const url = r.url;
+                                        console.log(r);
+                                        const url = r.html_url;
                                         event.preventDefault();
                                         this.setState({ loading: true });
                                         const gasAmount = await this.state.deployedSoliGity.methods.createProject(owner, repo, description, url).estimateGas({ from: this.state.account });
