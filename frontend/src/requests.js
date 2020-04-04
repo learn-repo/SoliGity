@@ -41,6 +41,8 @@ export const commits = (repoName) =>
 
 export const createIssue = data => axios.post(`${APIURL}/github/issue/create`, data);
 
+export const closeIssue = data => axios.post(`${APIURL}/github/issue/close`, data);
+
 export const forkRepo = data => axios.post(`${APIURL}/github/repo/fork`, data);
 
 export const createPullRequest = data => axios.post(`${APIURL}/github/repo/pr`, data);

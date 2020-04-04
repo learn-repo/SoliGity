@@ -105,6 +105,38 @@ router.post("/issue/create", authCheck, async (req, res, next) => {
     }
 });
 
+router.post("/issue/close", authCheck, async (req, res, next) => {
+    try {
+        const { owner, repo, issue_number } = req.body;
+        const token = req.headers.authorization;
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const id = decoded.userId;
+        const users = await models.User.findAll({ where: { id } });
+        const user = users[0];
+        const bytes = CryptoJS.AES.decrypt(
+            (user.gitHubPassword).toString(),
+            process.env.CRYPTO_SECRET
+        );
+        const password = bytes.toString(CryptoJS.enc.Utf8);
+        const octokit = new Octokit({
+            auth: {
+                username: user.gitHubUsername,
+                password
+            }
+        });
+        const data = await octokit.issues.update({
+            owner,
+            repo,
+            issue_number,
+            state: "closed",
+        });
+        res.json(data);
+    } catch (err) {
+        res.status(400).json(err.message);
+    }
+});
+
+
 router.post("/repo/fork", authCheck, async (req, res, next) => {
     try {
         const { owner, repo } = req.body;

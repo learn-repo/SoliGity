@@ -46,7 +46,7 @@ class ParticipatedPage extends Component {
             this.setState({ projectNumber });
 
             for (var i = 1; i <= projectNumber; i++) {
-                const event = await deployedSoliGity.methods.Projects(i).call();
+                const event = await deployedSoliGity.methods.projects(i).call();
                 this.setState({
                     participated: [...this.state.participated, event]
                 });

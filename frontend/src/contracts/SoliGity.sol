@@ -4,11 +4,10 @@ pragma solidity >=0.4.21 <0.7.0;
 contract SoliGity {
     string public dappName;
     uint256 public eventNumber = 0; // total number of requests
+    uint256 public projectNumber = 0; // total number of projects
+
     // event status to keep track of the status of reward event
-    uint256 public projectNumber = 0;
     /*
-    enum explaination
-    no_requst - user has no request now
     help_wanted - user need help and sent a reward event
     under_review - user is reviewing the recent help
                 -> if review been accepted -> eventstatus: approved
@@ -18,24 +17,24 @@ contract SoliGity {
     enum eventStatus {help_wanted, under_review, approved}
 
     struct RewardEvent {
-        uint256 projectID; // link project to the event
-        uint256 eventID; // event ID to track each event
+        uint256 projectId; // link project to the event
+        uint256 eventId; // event ID to track each event
         string title;
+        uint256 issue;
+        uint256 pullRequest;
         // sponsor part - problem initiator
         string sponsorName; // sponsor's name/or github ID name
         address sponsorAddress; // sponsor's ETH address
+        uint256 bountyAmount; // the amount of money that sponsor are willing to pay
         // bounty hunter part - contributor
         string bountyHunterName; // bounty hunter's name/or github ID name
         address payable bountyHunterAddress; // bounty hunter's ETH address
-        uint256 PR;
-        // reward part
-        uint256 bountyAmount; // the amount of money that sponsor are willing to pay
         // track event status
         eventStatus status; // defined in event status
     }
 
     struct Project {
-        uint256 ProjectID;
+        uint256 id;
         string owner;
         string name;
         string description;
@@ -44,8 +43,8 @@ contract SoliGity {
 
     // mapping adress to reward events - type public
     // use uint256 => RewardEvent because one user can send multiple reward events
-    mapping(uint256 => RewardEvent) public RewardEvents;
-    mapping(uint256 => Project) public Projects;
+    mapping(uint256 => RewardEvent) public rewardEvents;
+    mapping(uint256 => Project) public projects;
 
     // constructor initalization
     constructor() public {
@@ -59,9 +58,8 @@ contract SoliGity {
     3. approve an issue
     4. reject an issue
     */
-
-    event createProjectEvent(
-        uint256 ProjectID,
+    event CreateProjectEvent(
+        uint256 id,
         string owner,
         string name,
         string description,
@@ -69,10 +67,11 @@ contract SoliGity {
     );
 
     // event creation broadcast
-    event createIssueEvent(
-        uint256 projectID,
-        uint256 eventID,
+    event CreateIssueEvent(
+        uint256 projectId,
+        uint256 eventId,
         string title,
+        uint256 issue,
         // sponsor part - problem initiator
         string sponsorName,
         address sponsorAddress,
@@ -83,9 +82,9 @@ contract SoliGity {
 
     // event review broadcast
     // if someone pr first -> broadcast to the network early -> has priority to get the reward
-    event requestReviewEvent(
-        uint256 projectID,
-        uint256 eventID,
+    event RequestReviewEvent(
+        uint256 projectId,
+        uint256 eventId,
         // sponsor part - problem initiator
         string sponsorName,
         address sponsorAddress,
@@ -100,8 +99,9 @@ contract SoliGity {
 
     // unfortunately - your pr is rejected due to some mistakes maybe, try next time
     event RewardRejected(
-        uint256 projectID,
-        uint256 eventID,
+        uint256 projectId,
+        uint256 eventId,
+        uint256 pullRequest,
         // sponsor part - problem initiator
         string sponsorName,
         address sponsorAddress,
@@ -116,8 +116,9 @@ contract SoliGity {
 
     // unfortunately - your pr is rejected due to some mistakes maybe, try next time
     event RewardApproved(
-        uint256 projectID,
-        uint256 eventID,
+        uint256 projectId,
+        uint256 eventId,
+        uint256 pullRequest,
         // sponsor part - problem initiator
         string sponsorName,
         address sponsorAddress,
@@ -133,44 +134,47 @@ contract SoliGity {
     // functions declearation
     // create a reward event
     function createIssue(
-        uint256 _projectID,
+        uint256 _projectId,
         string memory _title,
         string memory _sponsorName,
-        uint256 _bountyAmount
+        uint256 _bountyAmount,
+        uint256 _issue
     ) public {
+        require(_projectId != 0, "Project Id should not be 0");
+        require(bytes(_title).length > 0, "title should not be empty");
         require(
             bytes(_sponsorName).length > 0,
             "Sponsor name should not be empty"
         );
-        require(bytes(_title).length > 0, "title should not be empty");
-        require(_projectID != 0, "Project ID should not be 0");
         require(
             msg.sender.balance >= _bountyAmount,
             "Sponsor should have enough money"
         );
+        require(_issue != 0, "Issue should not be 0");
         // accumulate the number of events been requested
         eventNumber++;
 
         // reward events record
-        RewardEvents[eventNumber] = RewardEvent(
-            _projectID,
+        rewardEvents[eventNumber] = RewardEvent(
+            _projectId,
             eventNumber,
             _title,
+            _issue,
+            0, // pull request
             _sponsorName,
             msg.sender,
-            // no helper now so all null
-            "null",
-            address(0x0),
-            0,
             _bountyAmount,
+            "null", // bountyHunterName
+            address(0x0), // bountyHunterAddress
             eventStatus.help_wanted
         );
 
         // broadcast event to the network
-        emit createIssueEvent(
-            _projectID,
+        emit CreateIssueEvent(
+            _projectId,
             eventNumber,
             _title,
+            _issue,
             _sponsorName,
             msg.sender,
             _bountyAmount,
@@ -179,131 +183,144 @@ contract SoliGity {
     }
 
     function createProject(
-        string memory owner,
-        string memory name,
-        string memory description,
-        string memory url
+        string memory _owner,
+        string memory _name,
+        string memory _description,
+        string memory _url
     ) public {
-        require(bytes(owner).length > 0, "owner should not be empty");
-        require(bytes(name).length > 0, "name should not be empty");
+        require(bytes(_owner).length > 0, "owner should not be empty");
+        require(bytes(_name).length > 0, "name should not be empty");
         require(
-            bytes(description).length > 0,
+            bytes(_description).length > 0,
             "description should not be empty"
         );
-        require(bytes(url).length > 0, "url should not be empty");
+        require(bytes(_url).length > 0, "url should not be empty");
         projectNumber++;
-        Projects[projectNumber] = Project(
+        projects[projectNumber] = Project(
             projectNumber,
-            owner,
-            name,
-            description,
-            url
+            _owner,
+            _name,
+            _description,
+            _url
         );
 
-        emit createProjectEvent(projectNumber, owner, name, description, url);
+        emit CreateProjectEvent(
+            projectNumber,
+            _owner,
+            _name,
+            _description,
+            _url
+        );
     }
 
     // review a reward event
     function requestReview(
-        uint256 _eventID,
+        uint256 _eventId,
         string memory _bountyHunterName,
-        uint256 _PR
+        uint256 _pullRequest
     ) public {
-        RewardEvent memory _RewardEvent = RewardEvents[_eventID];
+        RewardEvent memory _rewardEvent = rewardEvents[_eventId];
         require(
             bytes(_bountyHunterName).length > 0,
             "Bounty hunter name should not be empty"
         );
         require(
-            RewardEvents[_eventID].status == eventStatus.help_wanted,
+            rewardEvents[_eventId].status == eventStatus.help_wanted,
             "Event shold be help-wanted"
         );
 
         // update bounty hunter info in struct
-        _RewardEvent.bountyHunterName = _bountyHunterName;
-        _RewardEvent.bountyHunterAddress = msg.sender;
-        _RewardEvent.PR = _PR;
-        _RewardEvent.status = eventStatus.under_review;
+        _rewardEvent.bountyHunterName = _bountyHunterName;
+        _rewardEvent.bountyHunterAddress = msg.sender;
+        _rewardEvent.pullRequest = _pullRequest;
+        _rewardEvent.status = eventStatus.under_review;
         // save it to the struct
-        RewardEvents[_eventID] = _RewardEvent;
+        rewardEvents[_eventId] = _rewardEvent;
 
         // broadcast event to the network
-        emit requestReviewEvent(
-            RewardEvents[_eventID].projectID,
-            RewardEvents[_eventID].eventID,
-            RewardEvents[_eventID].sponsorName,
-            RewardEvents[_eventID].sponsorAddress,
-            RewardEvents[_eventID].bountyHunterName,
-            RewardEvents[_eventID].bountyHunterAddress,
-            RewardEvents[_eventID].bountyAmount,
-            RewardEvents[_eventID].status
+        emit RequestReviewEvent(
+            rewardEvents[_eventId].projectId,
+            rewardEvents[_eventId].eventId,
+            rewardEvents[_eventId].sponsorName,
+            rewardEvents[_eventId].sponsorAddress,
+            rewardEvents[_eventId].bountyHunterName,
+            rewardEvents[_eventId].bountyHunterAddress,
+            rewardEvents[_eventId].bountyAmount,
+            rewardEvents[_eventId].status
         );
     }
 
     // approve a reward event
-    function approvePR(uint256 _eventID) public payable {
-        RewardEvent memory _RewardEvent = RewardEvents[_eventID];
-        address payable _rewardRecevier = _RewardEvent.bountyHunterAddress;
+    function approvePullRequest(uint256 _eventId) public payable {
+        RewardEvent memory _rewardEvent = rewardEvents[_eventId];
+        address payable _rewardRecevier = _rewardEvent.bountyHunterAddress;
         require(
-            RewardEvents[_eventID].status == eventStatus.under_review,
+            rewardEvents[_eventId].status == eventStatus.under_review,
             "Event shold be under-review"
         );
         require(
-            msg.sender == _RewardEvent.sponsorAddress,
-            "Only issue creator can approve an PR"
+            msg.sender == _rewardEvent.sponsorAddress,
+            "Only issue creator can approve an Pull & Request"
         );
-        require(msg.value >= _RewardEvent.bountyAmount, "no sufficient value!");
+        require(msg.value >= _rewardEvent.bountyAmount, "no sufficient value!");
 
         // change the status of the reward event to - approved
-        _RewardEvent.status = eventStatus.approved;
+        _rewardEvent.status = eventStatus.approved;
 
         // save it to the struct
-        RewardEvents[_eventID] = _RewardEvent;
-        _rewardRecevier.transfer(_RewardEvent.bountyAmount);
+        rewardEvents[_eventId] = _rewardEvent;
+        _rewardRecevier.transfer(_rewardEvent.bountyAmount);
+
         // broadcast event to the network
         emit RewardApproved(
-            RewardEvents[_eventID].projectID,
-            RewardEvents[_eventID].eventID,
-            RewardEvents[_eventID].sponsorName,
-            RewardEvents[_eventID].sponsorAddress,
-            RewardEvents[_eventID].bountyHunterName,
-            RewardEvents[_eventID].bountyHunterAddress,
-            RewardEvents[_eventID].bountyAmount,
-            RewardEvents[_eventID].status
+            rewardEvents[_eventId].projectId,
+            rewardEvents[_eventId].eventId,
+            rewardEvents[_eventId].pullRequest,
+            rewardEvents[_eventId].sponsorName,
+            rewardEvents[_eventId].sponsorAddress,
+            rewardEvents[_eventId].bountyHunterName,
+            rewardEvents[_eventId].bountyHunterAddress,
+            rewardEvents[_eventId].bountyAmount,
+            rewardEvents[_eventId].status
         );
     }
 
     // reject a reward event
-    function rejectPR(uint256 _eventID) public {
-        RewardEvent memory _RewardEvent = RewardEvents[_eventID];
+    function rejectPullRequest(uint256 _eventId) public {
+        RewardEvent memory _rewardEvent = rewardEvents[_eventId];
         require(
-            RewardEvents[_eventID].status == eventStatus.under_review,
+            rewardEvents[_eventId].status == eventStatus.under_review,
             "Event shold be under-review"
         );
         require(
-            msg.sender == _RewardEvent.sponsorAddress,
-            "Only issue creator can approve an PR"
+            msg.sender == _rewardEvent.sponsorAddress,
+            "Only issue creator can approve an Pull & Request"
         );
 
+        uint256 _pullRequest = _rewardEvent.pullRequest;
+        string memory _bountyHunterName = _rewardEvent.bountyHunterName;
+        address payable _bountyHunterAddress = _rewardEvent.bountyHunterAddress;
+
         // change the status of the reward event to - approved
-        _RewardEvent.status = eventStatus.help_wanted;
-        _RewardEvent.bountyHunterName = "null";
-        _RewardEvent.bountyHunterAddress = address(0x0);
-        _RewardEvent.PR = 0;
+        _rewardEvent.status = eventStatus.help_wanted;
+        _rewardEvent.bountyHunterName = "null";
+        _rewardEvent.bountyHunterAddress = address(0x0);
+        _rewardEvent.pullRequest = 0;
 
         // save it to the struct
-        RewardEvents[_eventID] = _RewardEvent;
+        rewardEvents[_eventId] = _rewardEvent;
 
         // broadcast event to the network
         emit RewardRejected(
-            RewardEvents[_eventID].projectID,
-            RewardEvents[_eventID].eventID,
-            RewardEvents[_eventID].sponsorName,
-            RewardEvents[_eventID].sponsorAddress,
-            RewardEvents[_eventID].bountyHunterName,
-            RewardEvents[_eventID].bountyHunterAddress,
-            RewardEvents[_eventID].bountyAmount,
-            RewardEvents[_eventID].status
+            rewardEvents[_eventId].projectId,
+            rewardEvents[_eventId].eventId,
+            _pullRequest,
+            rewardEvents[_eventId].sponsorName,
+            rewardEvents[_eventId].sponsorAddress,
+            _bountyHunterName,
+            _bountyHunterAddress,
+            rewardEvents[_eventId].bountyAmount,
+            rewardEvents[_eventId].status
         );
     }
 }
