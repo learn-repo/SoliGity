@@ -1,4 +1,4 @@
 .form-label-text{
-    @extend .form;
-    font-size: 20px;
-  }
+  @extend .form;
+  font-size: 20px;
+}

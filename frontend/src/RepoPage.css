@@ -52,3 +52,7 @@
   @extend .p;
   margin-left: -12px;
 }
+
+.btn[disabled] {
+  display: none;
+}
