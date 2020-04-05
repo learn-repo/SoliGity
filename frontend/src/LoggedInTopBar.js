@@ -1,8 +1,7 @@
-import React, { useState, Component } from "react";
+import React, { useState } from "react";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import { Redirect, withRouter } from "react-router-dom";
-import Logo from "./assets/logo.png";
 import Icon from "./assets/icon.png";
 import "./LoggedInTopBar.css";
 
@@ -21,7 +20,7 @@ function LoggedInTopBar({ location, account, balance }) {
                     <Navbar.Brand href="/participated">
                         <img
                             src={Icon}
-                            width="80"
+                            width="70"
                             className="d-inline-block align-top"
                             alt="React Bootstrap logo"
                         />

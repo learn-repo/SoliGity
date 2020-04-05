@@ -4,8 +4,8 @@ import Jumbotron from "react-bootstrap/Jumbotron";
 import { Link } from "react-router-dom";
 import Web3 from 'web3';
 import SoliGity from './abis/SoliGity';
-import LoggedInTopBar from "./LoggedInTopBar";
 import Footer from "./Footer";
+import LoggedInTopBar from "./LoggedInTopBar";
 import "./ParticipatedPage.css";
 
 

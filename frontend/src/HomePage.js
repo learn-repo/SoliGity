@@ -3,12 +3,9 @@ import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
-import Navbar from "react-bootstrap/Navbar";
 import { Link, Redirect } from "react-router-dom";
 import * as yup from "yup";
-import Logo from "./assets/logo.png";
 import "./HomePage.css";
-import Icon from "./assets/icon.png";
 import { logIn } from "./requests";
 
 const schema = yup.object({
@@ -36,17 +33,6 @@ function HomePage() {
     }
     return (
         <>
-            <Navbar bg="light" expand="lg" variant="light">
-                <Navbar.Brand href="#home">
-                    <img
-                        src={Icon}
-                        width="83"
-                        // height="100"
-                        className="d-inline-block align-top"
-                        alt="React Bootstrap logo"
-                    />
-                </Navbar.Brand>
-            </Navbar>
             <div className="page">
                 <h1 className="text-center">Log In</h1>
                 <Formik validationSchema={schema} onSubmit={handleSubmit}>
