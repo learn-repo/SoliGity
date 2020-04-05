@@ -162,13 +162,17 @@ class RepoPage extends Component {
                                 <Button variant="success" href={this.state.info.url}>Go to Repository</Button>
                                 <Button variant="success"
                                     onClick={async (event) => {
-                                        event.preventDefault();
-                                        let data = {
-                                            owner: this.state.info.owner,
-                                            repo: this.state.info.name,
+                                        try {
+                                            event.preventDefault();
+                                            let data = {
+                                                owner: this.state.info.owner,
+                                                repo: this.state.info.name,
+                                            }
+                                            const response = await forkRepo(data);
+                                            alert(`You have forked Repository ${this.state.info.name} successfully!`);
+                                        } catch (ex) {
+                                            alert(`Fail to Fork Repository ${this.state.info.name}!`);
                                         }
-                                        const response = await forkRepo(data);
-                                        alert("ok");
                                     }}>Fork</Button>
                                 <hr></hr>
                             </h1>
