@@ -33,20 +33,18 @@ export const currentUser = () => axios.get(`${APIURL}/users/currentUser`);
 export const setGithubCredentials = data =>
     axios.post(`${APIURL}/github/setGithubCredentials`, data);
 
-export const repos = page =>
-    axios.get(`${APIURL}/github/repos/${page || 1}`);
+export const repos = page => axios.get(`${APIURL}/github/repos/${page || 1}`);
 
-export const commits = (repoName) =>
-    axios.get(`${APIURL}/github/commits?repo=${repoName}`);
+export const commits = (repoName) => axios.get(`${APIURL}/github/commits?repo=${repoName}`);
 
 export const createIssue = data => axios.post(`${APIURL}/github/issue/create`, data);
 
 export const closeIssue = data => axios.post(`${APIURL}/github/issue/close`, data);
 
-export const forkRepo = data => axios.post(`${APIURL}/github/repo/fork`, data);
+export const forkRepo = data => axios.post(`${APIURL}/github/fork`, data);
 
-export const createPullRequest = data => axios.post(`${APIURL}/github/repo/pr`, data);
+export const createPullRequest = data => axios.post(`${APIURL}/github/pullrequest/create`, data);
 
-export const closePullRequest = data => axios.post(`${APIURL}/github/repo/pr/close`, data);
+export const rejectPullRequest = data => axios.post(`${APIURL}/github/pullrequest/reject`, data);
 
-export const approvePullRequest = data => axios.post(`${APIURL}/github/repo/pr/approve`, data);
+export const approvePullRequest = data => axios.post(`${APIURL}/github/pullrequest/approve`, data);

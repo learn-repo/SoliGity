@@ -12,7 +12,7 @@ import Web3 from 'web3';
 import * as yup from "yup";
 import SoliGity from './abis/SoliGity';
 import LoggedInTopBar from "./LoggedInTopBar";
-import { approvePullRequest, closePullRequest, createIssue, createPullRequest, currentUser, forkRepo, closeIssue } from "./requests";
+import { approvePullRequest, rejectPullRequest, createIssue, createPullRequest, currentUser, forkRepo, closeIssue } from "./requests";
 import "./RepoPage.css";
 
 const moment = require("moment");
@@ -342,7 +342,7 @@ class RepoPage extends Component {
                                                                             repo: this.state.info.name,
                                                                             pull_number: rc.pullRequest
                                                                         }
-                                                                        await closePullRequest(data);
+                                                                        await rejectPullRequest(data);
                                                                         await this.componentDidMount();
                                                                         this.setState({ loading: false });
                                                                     })
