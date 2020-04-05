@@ -13,7 +13,6 @@ import RequireAuth from "./RequireAuth";
 import SettingsPage from "./SettingsPage";
 import SignUpPage from "./SignUpPage";
 
-
 const history = createHistory();
 
 class App extends Component {
