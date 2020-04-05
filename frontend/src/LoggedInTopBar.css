@@ -1,10 +1,6 @@
 .nav-link 
 {
-  font-size: large;
-}
-.navbar-text 
-{
-  font-size: large;
+  font-size: 16px;
 }
 
 .hover-nav .hover-nav-on,
