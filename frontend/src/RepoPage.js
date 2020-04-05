@@ -3,7 +3,9 @@ import { Component, default as React } from "react";
 import Button from "react-bootstrap/Button";
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
 import Card from "react-bootstrap/Card";
+import CardGroup from "react-bootstrap/CardGroup";
 import Jumbotron from "react-bootstrap/Jumbotron";
+import Accordion from "react-bootstrap/Accordion";
 import Form from "react-bootstrap/Form";
 import { withRouter } from "react-router-dom";
 import Web3 from 'web3';
@@ -11,6 +13,7 @@ import * as yup from "yup";
 import SoliGity from './abis/SoliGity';
 import LoggedInTopBar from "./LoggedInTopBar";
 import { approvePullRequest, closePullRequest, createIssue, createPullRequest, currentUser, forkRepo, closeIssue } from "./requests";
+import "./RepoPage.css";
 
 const moment = require("moment");
 const querystring = require("querystring");
@@ -136,10 +139,12 @@ class RepoPage extends Component {
 
                 {this.state.info ?
                     <div className="page">
-                        <h1 className="text-center">{this.state.info.name}</h1>
-                        <Button variant="success" href={this.state.info.url}>Link to Repository</Button>
-                        <Button variant="success"
-                            onClick={async (event) => {
+                        <div>
+                            <h1 class="display-4">{this.state.info.name}
+                            <p class="lead"></p>
+                            <Button variant="success" href={this.state.info.url}>Go to Repository</Button>
+                            <Button variant="success"
+                                onClick={async (event) => {
                                 event.preventDefault();
                                 let data = {
                                     owner: this.state.info.owner,
@@ -147,7 +152,14 @@ class RepoPage extends Component {
                                 }
                                 const response = await forkRepo(data);
                                 alert("ok");
-                            }}>Fork</Button>
+                                }}>Fork</Button>
+                                <hr></hr>
+                            </h1>
+                        </div>
+                            
+                        <h3 class="display-5">
+                            Create a new issue using the form below:
+                        </h3>
                         <Formik validationSchema={schema} onSubmit={this.handleSubmit}>
                             {({
                                 handleSubmit,
@@ -160,20 +172,20 @@ class RepoPage extends Component {
                             }) => (
                                     <Form noValidate onSubmit={handleSubmit}>
                                         <Form.Group controlId="Title">
-                                            <Form.Label>Title</Form.Label>
+                                            <Form.Label class="form-label-text">Title</Form.Label>
                                             <Form.Control type='text' name='title' value={values.title || ""} onChange={handleChange}
                                                 placeholder="Enter Title" />
                                         </Form.Group>
 
                                         <Form.Group controlId="Description">
-                                            <Form.Label>Description</Form.Label>
+                                            <Form.Label class="form-label-text">Description</Form.Label>
                                             <Form.Control type='text' name='description' value={values.description || ""} onChange={handleChange}
 
                                                 placeholder="Enter Description" />
                                         </Form.Group>
 
                                         <Form.Group controlId="BountyAmount">
-                                            <Form.Label>Bounty Amount</Form.Label>
+                                            <Form.Label class="form-label-text">Bounty Amount</Form.Label>
                                             <Form.Control type='text' name='bountyAmount' value={values.bountyAmount || ''} onChange={handleChange}
                                                 placeholder="Enter bounty Amount" />
                                         </Form.Group>
@@ -183,7 +195,9 @@ class RepoPage extends Component {
                                 )}
                         </Formik>
 
-
+                        <h3 class="display-5-with-top-margin" >
+                            Existing Issues:
+                        </h3>
                         {this.state.loading
                             ?
                             <div><p className="text-center">Loading ...</p></div>
@@ -193,22 +207,30 @@ class RepoPage extends Component {
                                     return r.projectId === this.state.info.id.toString();
                                 }).map(rc => {
                                     return (
-                                        <Card style={{ width: "90vw", margin: "0 auto" }}>
+                                        <Card>
                                             <Card.Body>
-                                                <Card.Title>{rc.title}</Card.Title>
-                                                <Card.Text>eventId: {rc.eventId}</Card.Text>
-                                                <Card.Text>projectId: {rc.projectId}</Card.Text>
-                                                <Card.Text>sponsorName: {rc.sponsorName}</Card.Text>
-                                                <Card.Text>sponsorAddress: {rc.sponsorAddress}</Card.Text>
-                                                <Card.Text>bountyHunterName: {rc.bountyHunterName}</Card.Text>
-                                                <Card.Text>bountyHunterAddress: {rc.bountyHunterAddress}</Card.Text>
-                                                <Card.Text>PR #: {rc.pullRequest}</Card.Text>
-                                                <Card.Text>Issue #: {rc.issue}</Card.Text>
-                                                <Card.Text>bountyAmount: {window.web3.utils.fromWei(rc.bountyAmount.toString(), 'Ether')} ETH</Card.Text>
+                                                <Card.Title class="card-issue-title">{rc.title}</Card.Title>
+                                                <Card.Subtitle class="card-issue-subtitle">Bounty Amount - {window.web3.utils.fromWei(rc.bountyAmount.toString(), 'Ether')} ETH</Card.Subtitle>
                                                 <Card.Text>status: {rc.status}</Card.Text>
+                                                <Card.Text>sponsorName: {rc.sponsorName}</Card.Text>
+                                                <Accordion defaultActiveKey="0">
+                                                    <Accordion.Toggle as={Button} variant="link" eventKey="1">
+                                                        <p class="expand-customized">View Extra Information</p>
+                                                    </Accordion.Toggle>
+                                                    <Accordion.Collapse eventKey="1">
+                                                    <ul>
+                                                        <Card.Text>projectId: {rc.projectId}</Card.Text>
+                                                        <Card.Text>Issue #: {rc.issue}</Card.Text>
+                                                        <Card.Text>eventId: {rc.eventId}</Card.Text>
+                                                        <Card.Text>sponsorAddress: {rc.sponsorAddress}</Card.Text>
+                                                        <Card.Text>bountyHunterName: {rc.bountyHunterName}</Card.Text>
+                                                        <Card.Text>bountyHunterAddress: {rc.bountyHunterAddress}</Card.Text>
+                                                        <Card.Text>Pull Reqest #: {rc.pullRequest}</Card.Text>
+                                                    </ul>
+                                                    </Accordion.Collapse>
+                                                </Accordion>
 
                                                 <ButtonToolbar>
-
                                                     <Button variant="success"
                                                         onClick={async (event) => {
                                                             event.preventDefault();

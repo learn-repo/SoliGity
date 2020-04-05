@@ -30,11 +30,11 @@ function LoggedInTopBar({ location }) {
                     <Navbar.Collapse id="basic-navbar-nav">
 
                         <Nav className="mr-auto">
-                            <Nav.Link href="/repos" active={pathname === "/repos"}>
-                                Repos
-                            </Nav.Link>
                             <Nav.Link href="/participated" active={pathname === "/participated"}>
-                                Main
+                                Home
+                            </Nav.Link>
+                            <Nav.Link href="/repos" active={pathname === "/repos"}>
+                                My Repositories
                             </Nav.Link>
                             <Nav.Link href="/settings" active={pathname === "/settings"}>
                                 Settings

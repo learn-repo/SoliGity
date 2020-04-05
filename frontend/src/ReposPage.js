@@ -57,10 +57,15 @@ class ReposPage extends Component {
 
     render() {
         return (
-            <div>
+            <>
+             <LoggedInTopBar />
 
-                <LoggedInTopBar />
-
+            <div className="page">
+                <div>
+                    <h1 class="display-4">My Repositories</h1>
+                    <p class="lead"></p>
+                    <hr class="my-4"></hr>
+                 </div>
                 {this.state.repositories.map((r, i) => {
                     return (
                         <Card style={{ width: "90vw", margin: "0 auto" }} key={i}>
@@ -91,9 +96,10 @@ class ReposPage extends Component {
                                     }
                                 }}>
                                     Participate
-              </Link>
+                                </Link>
                             </Card.Body>
                         </Card>
+                        
                     );
                 })}
                 <br />
@@ -118,6 +124,7 @@ class ReposPage extends Component {
                 </Pagination>
                 <br />
             </div>
+            </>
         )
     }
 }

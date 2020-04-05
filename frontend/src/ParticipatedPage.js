@@ -64,26 +64,24 @@ class ParticipatedPage extends Component {
                 <LoggedInTopBar />
                 <div className="page">
                     <div>
-                        <h1 class="display-4">Participated Repositories</h1>
-                        <p class="lead">These are the projects you are currently working on.</p>
+                        <h1 class="display-4">Project Catalog</h1>
+                        <p class="lead"></p>
                         <hr class="my-4"></hr>
                     </div>
                     {this.state.participated.map(rc => {
                         return (
-                            <Jumbotron>
+                            <Jumbotron class = "customized-jumbotron-participated">
                                 <h1>{rc.name}</h1>
                                 <p> {rc.description}</p>
                                 <p>
                                     <Link className="btn btn-primary" to={`/repo?repo=${rc.name}&?owner=${rc.owner}`}>View Project</Link>
-                                    <Button variant="success" href={rc.url}>Link to Repository</Button>
+                                    <Button variant="success" href={rc.url}>Go to Repository</Button>
                                 </p>
                             </Jumbotron>
                             
                         );
                     })}
                 </div>
-
-            
             </>
         );
     }
