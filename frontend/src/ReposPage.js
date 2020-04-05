@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import Web3 from 'web3';
 import SoliGity from './abis/SoliGity';
 import LoggedInTopBar from "./LoggedInTopBar";
+import Footer from "./Footer";
 import { repos } from "./requests";
 
 class ReposPage extends Component {
@@ -72,80 +73,38 @@ class ReposPage extends Component {
                         <p class="lead"></p>
                         <hr class="my-4"></hr>
                     </div>
-                    <div class="card-deck">
                     {this.state.repositories.map((r, i) => {
                         return (
-                            // <Jumbotron>
-                            //     <h1>{r.name}</h1>
-                            //     <p>{r.description ? r.description : "No Description."}</p>
-                            //     <Link className="btn btn-success" onClick={async (event) => {
-                            //             try {
-                            //                 const [owner, repo] = r.full_name.split("/");
-                            //                 const description = r.description || "No Description";
-                            //                 console.log(r);
-                            //                 const url = r.html_url;
-                            //                 event.preventDefault();
-                            //                 this.setState({ loading: true });
-                            //                 const gasAmount = await this.state.deployedSoliGity.methods
-                            //                     .createProject(owner, repo, description, url)
-                            //                     .estimateGas({ from: this.state.account });
-                            //                 this.state.deployedSoliGity.methods
-                            //                     .createProject(owner, repo, description, url)
-                            //                     .send({ from: this.state.account, gas: gasAmount })
-                            //                     .once('receipt', async (receipt) => {
-                            //                         this.setState({ loading: false });
-                            //                     })
-                            //             } catch (ex) {
-                            //                 alert(ex.message);
-                            //                 this.setState({ loading: false });
-                            //             }
-                            //         }}>
-                            //             Participate
-                            //     </Link>
-                            // </Jumbotron>
-                            // <Card style={{ width: "90vw", margin: "0 auto" }} key={i}>
-                            //     <Card.Body>
-                            //         <Card.Title>{r.name}</Card.Title>
-                            //         <Card.Text>{r.description ? r.description : "No Description."}
-                            //         </Card.Text>
-
-                            //     </Card.Body>
-                            // </Card>
-                            <Card>
-                                <Card.Body>
-                                    <h5 class="card-title">{r.name}</h5>
-                                    <p class="card-text">{r.description ? r.description : "No Description."}</p> 
-                                </Card.Body>
-                                <Card.Footer>
-                                    <Link className="btn btn-success" onClick={async (event) => {
-                                            try {
-                                                const [owner, repo] = r.full_name.split("/");
-                                                const description = r.description || "No Description";
-                                                console.log(r);
-                                                const url = r.html_url;
-                                                event.preventDefault();
-                                                this.setState({ loading: true });
-                                                const gasAmount = await this.state.deployedSoliGity.methods
-                                                    .createProject(owner, repo, description, url)
-                                                    .estimateGas({ from: this.state.account });
-                                                this.state.deployedSoliGity.methods
-                                                    .createProject(owner, repo, description, url)
-                                                    .send({ from: this.state.account, gas: gasAmount })
-                                                    .once('receipt', async (receipt) => {
-                                                        this.setState({ loading: false });
-                                                    })
-                                            } catch (ex) {
-                                                alert(ex.message);
-                                                this.setState({ loading: false });
-                                            }
-                                        }}>
-                                            Participate
-                                    </Link>
-                                </Card.Footer>
-                            </Card>
+                            <Jumbotron style={{ paddingTop: "30px", paddingBottom: "30px" }} >
+                                <h1>{r.name}</h1>
+                                <p>{r.description ? r.description : "No Description."}</p>
+                                <Link className="btn btn-success" onClick={async (event) => {
+                                        try {
+                                            const [owner, repo] = r.full_name.split("/");
+                                            const description = r.description || "No Description";
+                                            console.log(r);
+                                            const url = r.html_url;
+                                            event.preventDefault();
+                                            this.setState({ loading: true });
+                                            const gasAmount = await this.state.deployedSoliGity.methods
+                                                .createProject(owner, repo, description, url)
+                                                .estimateGas({ from: this.state.account });
+                                            this.state.deployedSoliGity.methods
+                                                .createProject(owner, repo, description, url)
+                                                .send({ from: this.state.account, gas: gasAmount })
+                                                .once('receipt', async (receipt) => {
+                                                    this.setState({ loading: false });
+                                                })
+                                        } catch (ex) {
+                                            alert(ex.message);
+                                            this.setState({ loading: false });
+                                        }
+                                    }}>
+                                        Participate
+                                </Link>
+                            </Jumbotron>
                         );
                     })}
-                    </div>
                     <br />
 
                     <Pagination style={{ width: "90vw", margin: "0 auto" }}>
@@ -168,6 +127,7 @@ class ReposPage extends Component {
                     </Pagination>
                     <br />
                 </div>
+                <Footer />
             </>
         )
     }

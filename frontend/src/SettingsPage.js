@@ -5,6 +5,7 @@ import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import * as yup from "yup";
 import LoggedInTopBar from "./LoggedInTopBar";
+import Footer from "./Footer";
 import { changePassword, currentUser, setGithubCredentials } from "./requests";
 
 const userFormSchema = yup.object({
@@ -120,7 +121,7 @@ function SettingsPage() {
                             </Form>
                         )}
                 </Formik>
-                <br />
+                <br /><br /><br />
                 <h2>GitHub Settings</h2>
                 <Formik
                     validationSchema={githubFormSchema}
@@ -179,6 +180,7 @@ function SettingsPage() {
                         )}
                 </Formik>
             </div>
+            <Footer/>
         </>
     );
 }

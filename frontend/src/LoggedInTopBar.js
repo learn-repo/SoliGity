@@ -21,8 +21,7 @@ function LoggedInTopBar({ location, account, balance }) {
                     <Navbar.Brand href="/participated">
                         <img
                             src={Icon}
-                            width="50"
-                            // height="100"
+                            width="90"
                             className="d-inline-block align-top"
                             alt="React Bootstrap logo"
                         />
