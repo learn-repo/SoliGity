@@ -51,7 +51,7 @@ router.get("/repos/:page", authCheck, async (req, res, next) => {
     res.json(data);
 });
 
-router.get("/commits/", authCheck, async (req, res, next) => {
+router.get("/commits", authCheck, async (req, res, next) => {
     const token = req.headers.authorization;
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const id = decoded.userId;
@@ -137,7 +137,7 @@ router.post("/issue/close", authCheck, async (req, res, next) => {
 });
 
 
-router.post("/repo/fork", authCheck, async (req, res, next) => {
+router.post("/fork", authCheck, async (req, res, next) => {
     try {
         const { owner, repo } = req.body;
         const token = req.headers.authorization;
@@ -165,7 +165,7 @@ router.post("/repo/fork", authCheck, async (req, res, next) => {
     }
 });
 
-router.post("/repo/pr/close", authCheck, async (req, res, next) => {
+router.post("/pullrequest/reject", authCheck, async (req, res, next) => {
     try {
         const { owner, repo, pull_number } = req.body;
         const token = req.headers.authorization;
@@ -196,7 +196,7 @@ router.post("/repo/pr/close", authCheck, async (req, res, next) => {
     }
 });
 
-router.post("/repo/pr/approve", authCheck, async (req, res, next) => {
+router.post("/pullrequest/approve", authCheck, async (req, res, next) => {
     try {
         const { owner, repo, pull_number } = req.body;
         const token = req.headers.authorization;
@@ -233,7 +233,7 @@ router.post("/repo/pr/approve", authCheck, async (req, res, next) => {
     }
 });
 
-router.post("/repo/pr", authCheck, async (req, res, next) => {
+router.post("/pullrequest/create", authCheck, async (req, res, next) => {
     try {
         const { owner, repo, title, head, base } = req.body;
         const token = req.headers.authorization;
