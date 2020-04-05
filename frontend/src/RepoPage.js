@@ -138,15 +138,6 @@ class RepoPage extends Component {
         }
     };
 
-    statusName = (status) => {
-        if (status === "1") {
-            return "Pending Approval";
-        } else if (status === "2") {
-            return "Done";
-        }
-        return "Accepting Contribution"
-    }
-
     render() {
 
         return (
@@ -231,9 +222,16 @@ class RepoPage extends Component {
                                                 <Card.Subtitle class="card-issue-subtitle">Bounty Amount - {window.web3.utils.fromWei(rc.bountyAmount.toString(), 'Ether')} ETH</Card.Subtitle>
                                                 <Card.Text class="card-issue-text">Sponsor Name: {rc.sponsorName}</Card.Text>
                                                 <Card.Text class="card-issue-text">Status:&nbsp;
-                                                    <Badge variant="primary">
-                                                        {this.statusName(rc.status)}
-                                                    </Badge>{' '}
+                                                     {(() => {
+                                                        switch (rc.status) {
+                                                            case "0":
+                                                                return <Badge variant="primary">Accepting Contribution</Badge>;
+                                                            case "1":
+                                                                return < Badge variant="primary" >Pending Approval</Badge>;
+                                                            case "2":
+                                                                return <Badge variant="success">Done</Badge>;
+                                                        }
+                                                    })()}
                                                 </Card.Text>
                                                 <Accordion defaultActiveKey="0">
                                                     <Accordion.Toggle as={Button} variant="link" eventKey="1">
