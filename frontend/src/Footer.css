@@ -1,0 +1,24 @@
+.footer{
+    background: rgb(236, 236, 236);
+    color:rgb(0, 0, 0);
+    
+.links{
+    li a{
+    color: rgb(0, 0, 0);
+    transition: color .2s;
+    }
+}  
+.about-company{
+    i{font-size: 25px;}
+    a{
+    color:rgb(0, 0, 0);
+    transition: color .2s;
+    &:hover{color:#4180CB}
+    }
+} 
+
+.location{
+    i{font-size: 18px;}
+}
+.copyright p{border-top:1px solid rgb(0, 0, 0);} 
+}

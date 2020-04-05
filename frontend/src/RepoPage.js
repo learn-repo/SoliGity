@@ -142,7 +142,7 @@ class RepoPage extends Component {
 
         return (
             <>
-                <LoggedInTopBar />
+                <LoggedInTopBar/>
 
                 {this.state.info ?
                     <div className="page">

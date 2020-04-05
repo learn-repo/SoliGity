@@ -58,7 +58,7 @@ class ReposPage extends Component {
     render() {
         return (
             <>
-                <LoggedInTopBar />
+                <LoggedInTopBar/>
 
                 <div className="page">
                     <div>

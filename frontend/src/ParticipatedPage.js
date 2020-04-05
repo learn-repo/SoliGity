@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import Web3 from 'web3';
 import SoliGity from './abis/SoliGity';
 import LoggedInTopBar from "./LoggedInTopBar";
+import Footer from "./Footer";
 import "./ParticipatedPage.css";
 
 
@@ -61,7 +62,7 @@ class ParticipatedPage extends Component {
     render() {
         return (
             <>
-                <LoggedInTopBar />
+                <LoggedInTopBar/>
                 <div className="page">
                     <div>
                         <h1 class="display-4">Project Catalog</h1>
@@ -75,14 +76,15 @@ class ParticipatedPage extends Component {
                                 <p>{`Owner: ${rc.owner}`}</p>
                                 <p> {rc.description}</p>
                                 <p>
-                                    <Link className="btn btn-primary" to={`/repo?repo=${rc.name}&?owner=${rc.owner}`}>View Project</Link>
-                                    <Button variant="success" href={rc.url}>Go to Repository</Button>
+                                    <Link className="btn btn-primary float-right" to={`/repo?repo=${rc.name}&?owner=${rc.owner}`}>View Project</Link>
+                                    <Button variant="success float-right" href={rc.url}>Go to Repository</Button>
                                 </p>
                             </Jumbotron>
 
                         );
                     })}
                 </div>
+                <Footer />
             </>
         );
     }

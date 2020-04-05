@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, Component} from "react";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import { Redirect, withRouter } from "react-router-dom";
@@ -40,6 +40,7 @@ function LoggedInTopBar({ location }) {
                                 Settings
                             </Nav.Link>
                         </Nav>
+                        
                         <Nav className="topnav-right">
                             <Nav.Link>
                                 <span
