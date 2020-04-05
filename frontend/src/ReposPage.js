@@ -1,13 +1,11 @@
 import { Component, default as React } from "react";
-import Card from "react-bootstrap/Card";
-import Button from "react-bootstrap/Button";
 import Jumbotron from "react-bootstrap/Jumbotron";
 import Pagination from "react-bootstrap/Pagination";
 import { Link } from "react-router-dom";
 import Web3 from 'web3';
 import SoliGity from './abis/SoliGity';
-import LoggedInTopBar from "./LoggedInTopBar";
 import Footer from "./Footer";
+import LoggedInTopBar from "./LoggedInTopBar";
 import { repos } from "./requests";
 
 class ReposPage extends Component {
@@ -79,28 +77,28 @@ class ReposPage extends Component {
                                 <h1>{r.name}</h1>
                                 <p>{r.description ? r.description : "No Description."}</p>
                                 <Link className="btn btn-success" onClick={async (event) => {
-                                        try {
-                                            const [owner, repo] = r.full_name.split("/");
-                                            const description = r.description || "No Description";
-                                            console.log(r);
-                                            const url = r.html_url;
-                                            event.preventDefault();
-                                            this.setState({ loading: true });
-                                            const gasAmount = await this.state.deployedSoliGity.methods
-                                                .createProject(owner, repo, description, url)
-                                                .estimateGas({ from: this.state.account });
-                                            this.state.deployedSoliGity.methods
-                                                .createProject(owner, repo, description, url)
-                                                .send({ from: this.state.account, gas: gasAmount })
-                                                .once('receipt', async (receipt) => {
-                                                    this.setState({ loading: false });
-                                                })
-                                        } catch (ex) {
-                                            alert(ex.message);
-                                            this.setState({ loading: false });
-                                        }
-                                    }}>
-                                        Participate
+                                    try {
+                                        const [owner, repo] = r.full_name.split("/");
+                                        const description = r.description || "No Description";
+                                        console.log(r);
+                                        const url = r.html_url;
+                                        event.preventDefault();
+                                        this.setState({ loading: true });
+                                        const gasAmount = await this.state.deployedSoliGity.methods
+                                            .createProject(owner, repo, description, url)
+                                            .estimateGas({ from: this.state.account });
+                                        this.state.deployedSoliGity.methods
+                                            .createProject(owner, repo, description, url)
+                                            .send({ from: this.state.account, gas: gasAmount })
+                                            .once('receipt', async (receipt) => {
+                                                this.setState({ loading: false });
+                                            })
+                                    } catch (ex) {
+                                        alert("Fail to participate this project!");
+                                        this.setState({ loading: false });
+                                    }
+                                }}>
+                                    Participate
                                 </Link>
                             </Jumbotron>
                         );
