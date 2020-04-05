@@ -3,8 +3,7 @@ import { Component, default as React } from "react";
 import Button from "react-bootstrap/Button";
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
 import Card from "react-bootstrap/Card";
-import CardGroup from "react-bootstrap/CardGroup";
-import Jumbotron from "react-bootstrap/Jumbotron";
+import Badge from "react-bootstrap/Badge";
 import Accordion from "react-bootstrap/Accordion";
 import Form from "react-bootstrap/Form";
 import { withRouter } from "react-router-dom";
@@ -226,8 +225,12 @@ class RepoPage extends Component {
                                             <Card.Body>
                                                 <Card.Title class="card-issue-title">{rc.title}</Card.Title>
                                                 <Card.Subtitle class="card-issue-subtitle">Bounty Amount - {window.web3.utils.fromWei(rc.bountyAmount.toString(), 'Ether')} ETH</Card.Subtitle>
-                                                <Card.Text>Status: {this.statusName(rc.status)}</Card.Text>
-                                                <Card.Text>Sponsor Name: {rc.sponsorName}</Card.Text>
+                                                <Card.Text class="card-issue-text">Sponsor Name: {rc.sponsorName}</Card.Text>
+                                                <Card.Text class="card-issue-text">Status:&nbsp;
+                                                    <Badge variant="primary">
+                                                        {this.statusName(rc.status)}
+                                                    </Badge>{' '}
+                                                </Card.Text>
                                                 <Accordion defaultActiveKey="0">
                                                     <Accordion.Toggle as={Button} variant="link" eventKey="1">
                                                         <p class="expand-customized">View Extra Information</p>
