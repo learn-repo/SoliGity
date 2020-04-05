@@ -8,6 +8,7 @@ import { Link, Redirect } from "react-router-dom";
 import * as yup from "yup";
 import Logo from "./assets/logo.png";
 import "./HomePage.css";
+import Icon from "./assets/icon.png";
 import { logIn } from "./requests";
 
 const schema = yup.object({
@@ -38,12 +39,11 @@ function HomePage() {
             <Navbar bg="light" expand="lg" variant="light">
                 <Navbar.Brand href="#home">
                     <img
-                        src={Logo}
-                        width="174.2"
-                        height="100"
+                        src={Icon}
+                        width="83"
+                        // height="100"
                         className="d-inline-block align-top"
-                        alt="R
-                    eact Bootstrap logo"
+                        alt="React Bootstrap logo"
                     />
                 </Navbar.Brand>
             </Navbar>

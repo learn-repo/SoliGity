@@ -1,4 +1,14 @@
-.nav-link
+.nav-link .nav-text 
 {
-  font-size: x-large;
+  font-size: large;
+}
+
+
+.hover-nav .hover-nav-on,
+.hover-nav:hover .hover-nav-off {
+  display: none;
+}
+
+.hover-nav:hover .hover-nav-on {
+  display: inline;
 }

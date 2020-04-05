@@ -62,7 +62,7 @@ class ParticipatedPage extends Component {
     render() {
         return (
             <>
-                <LoggedInTopBar/>
+                <LoggedInTopBar account={this.state.account} />
                 <div className="page">
                     <div>
                         <h1 class="display-4">Project Catalog</h1>

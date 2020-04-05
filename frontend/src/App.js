@@ -71,7 +71,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <Addressbar account={this.state.account} />
+        {/* <Addressbar account={this.state.account} /> */}
         <Router history={history}>
           <Route path="/" exact component={HomePage} />
           <Route path="/signup" exact component={SignUpPage} />
