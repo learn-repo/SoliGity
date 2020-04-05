@@ -70,15 +70,16 @@ class ParticipatedPage extends Component {
                     </div>
                     {this.state.participated.map(rc => {
                         return (
-                            <Jumbotron class = "customized-jumbotron-participated">
+                            <Jumbotron class="customized-jumbotron-participated">
                                 <h1>{rc.name}</h1>
+                                <p>{`Owner: ${rc.owner}`}</p>
                                 <p> {rc.description}</p>
                                 <p>
                                     <Link className="btn btn-primary" to={`/repo?repo=${rc.name}&?owner=${rc.owner}`}>View Project</Link>
                                     <Button variant="success" href={rc.url}>Go to Repository</Button>
                                 </p>
                             </Jumbotron>
-                            
+
                         );
                     })}
                 </div>

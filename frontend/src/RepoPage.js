@@ -66,22 +66,30 @@ class RepoPage extends Component {
             const eventNumber = await deployedSoliGity.methods.eventNumber().call();
             this.setState({ eventNumber });
 
-            this.setState({ rewardEvents: [] });
-            for (var i = 1; i <= eventNumber; i++) {
-                const event = await deployedSoliGity.methods.rewardEvents(i).call();
-                this.setState({
-                    rewardEvents: [...this.state.rewardEvents, event]
-                });
-            }
             const projectNumber = await deployedSoliGity.methods.projectNumber().call();
-
+            let self = null;
             for (var i = 1; i <= projectNumber; i++) {
                 const event = await deployedSoliGity.methods.projects(i).call();
                 if (event.name === name && event.owner === owner) {
-                    this.setState({ info: event });
+                    self = event;
                 }
             }
-            console.log(this.state.info);
+            this.setState({ info: self });
+            this.setState({ rewardEvents: [] });
+
+            let temp = [];
+            for (var i = 1; i <= eventNumber; i++) {
+                const event = await deployedSoliGity.methods.rewardEvents(i).call();
+                temp = [...temp, event];
+            }
+            temp = temp.filter((r) => {
+                return r.projectId === self.id.toString();
+            }).sort((a, b) => {
+                return a.status - b.status;
+            })
+            this.setState({ rewardEvents: temp });
+
+
             this.setState({ loading: false })
         } else {
             window.alert('SoliGity contract is not found in your blockchain.')
@@ -131,6 +139,15 @@ class RepoPage extends Component {
         }
     };
 
+    statusName = (status) => {
+        if (status === "1") {
+            return "Pending Approval";
+        } else if (status === "2") {
+            return "Done";
+        }
+        return "Accepting Contribution"
+    }
+
     render() {
 
         return (
@@ -141,22 +158,22 @@ class RepoPage extends Component {
                     <div className="page">
                         <div>
                             <h1 class="display-4">{this.state.info.name}
-                            <p class="lead"></p>
-                            <Button variant="success" href={this.state.info.url}>Go to Repository</Button>
-                            <Button variant="success"
-                                onClick={async (event) => {
-                                event.preventDefault();
-                                let data = {
-                                    owner: this.state.info.owner,
-                                    repo: this.state.info.name,
-                                }
-                                const response = await forkRepo(data);
-                                alert("ok");
-                                }}>Fork</Button>
+                                <p class="lead"></p>
+                                <Button variant="success" href={this.state.info.url}>Go to Repository</Button>
+                                <Button variant="success"
+                                    onClick={async (event) => {
+                                        event.preventDefault();
+                                        let data = {
+                                            owner: this.state.info.owner,
+                                            repo: this.state.info.name,
+                                        }
+                                        const response = await forkRepo(data);
+                                        alert("ok");
+                                    }}>Fork</Button>
                                 <hr></hr>
                             </h1>
                         </div>
-                            
+
                         <h3 class="display-5">
                             Create a new issue using the form below:
                         </h3>
@@ -203,30 +220,28 @@ class RepoPage extends Component {
                             <div><p className="text-center">Loading ...</p></div>
                             :
                             <test>
-                                {this.state.rewardEvents.filter((r) => {
-                                    return r.projectId === this.state.info.id.toString();
-                                }).map(rc => {
+                                {this.state.rewardEvents.map(rc => {
                                     return (
                                         <Card>
                                             <Card.Body>
                                                 <Card.Title class="card-issue-title">{rc.title}</Card.Title>
                                                 <Card.Subtitle class="card-issue-subtitle">Bounty Amount - {window.web3.utils.fromWei(rc.bountyAmount.toString(), 'Ether')} ETH</Card.Subtitle>
-                                                <Card.Text>status: {rc.status}</Card.Text>
-                                                <Card.Text>sponsorName: {rc.sponsorName}</Card.Text>
+                                                <Card.Text>Status: {this.statusName(rc.status)}</Card.Text>
+                                                <Card.Text>Sponsor Name: {rc.sponsorName}</Card.Text>
                                                 <Accordion defaultActiveKey="0">
                                                     <Accordion.Toggle as={Button} variant="link" eventKey="1">
                                                         <p class="expand-customized">View Extra Information</p>
                                                     </Accordion.Toggle>
                                                     <Accordion.Collapse eventKey="1">
-                                                    <ul>
-                                                        <Card.Text>projectId: {rc.projectId}</Card.Text>
-                                                        <Card.Text>Issue #: {rc.issue}</Card.Text>
-                                                        <Card.Text>eventId: {rc.eventId}</Card.Text>
-                                                        <Card.Text>sponsorAddress: {rc.sponsorAddress}</Card.Text>
-                                                        <Card.Text>bountyHunterName: {rc.bountyHunterName}</Card.Text>
-                                                        <Card.Text>bountyHunterAddress: {rc.bountyHunterAddress}</Card.Text>
-                                                        <Card.Text>Pull Reqest #: {rc.pullRequest}</Card.Text>
-                                                    </ul>
+                                                        <ul>
+                                                            <Card.Text>Project Id: {rc.projectId}</Card.Text>
+                                                            <Card.Text>Issue #: {rc.issue}</Card.Text>
+                                                            <Card.Text>Event Id: {rc.eventId}</Card.Text>
+                                                            <Card.Text>Sponsor Address: {rc.sponsorAddress}</Card.Text>
+                                                            <Card.Text>Bounty Hunter Name: {rc.bountyHunterName}</Card.Text>
+                                                            <Card.Text>Bounty Hunter Address: {rc.bountyHunterAddress}</Card.Text>
+                                                            <Card.Text>Pull Reqest #: {rc.pullRequest}</Card.Text>
+                                                        </ul>
                                                     </Accordion.Collapse>
                                                 </Accordion>
 
