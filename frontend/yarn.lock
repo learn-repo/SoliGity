@@ -10132,7 +10132,7 @@ set-value@^2.0.0, set-value@^2.0.1:
   integrity sha512-JxHc1weCN68wRY0fhCoXpyK55m/XPHafOmK4UWD7m2CI14GMcFypt4w/0+NV5f/ZMby2F6S2wwA7fgynh9gWSw==
   dependencies:
     extend-shallow "^2.0.1"
-    is-extendable "^0.1.1"
+    is-able "^0.1.1"
     is-plain-object "^2.0.3"
     split-string "^3.0.1"
 

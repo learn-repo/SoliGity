@@ -1,6 +1,5 @@
 import { Component, default as React } from "react";
 import Button from "react-bootstrap/Button";
-import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
 import Jumbotron from "react-bootstrap/Jumbotron";
 import { Link } from "react-router-dom";
 import Web3 from 'web3';
@@ -71,7 +70,7 @@ class ParticipatedPage extends Component {
                     </div>
                     {this.state.participated.map(rc => {
                         return (
-                            <Jumbotron class="customized-jumbotron-participated">
+                            <Jumbotron>
                                 <h1>{rc.name}</h1>
                                 <p>{`Owner: ${rc.owner}`}</p>
                                 <p> {rc.description}</p>
