@@ -14,7 +14,8 @@ class ReposPage extends Component {
         repositories: [],
         page: 1,
         totalPages: 1,
-        loading: true
+        loading: true,
+        balance: 0
     }
 
     getRepos = async page => {
@@ -50,6 +51,10 @@ class ReposPage extends Component {
         if (networkData) {
             const deployedSoliGity = new web3.eth.Contract(SoliGity.abi, networkData.address);
             this.setState({ deployedSoliGity: deployedSoliGity });
+            let balance = await web3.eth.getBalance(accounts[0]); //Will give value in.
+            balance = web3.utils.fromWei(balance);
+            balance = Number(balance).toFixed(2);
+            this.setState({ balance: balance });
         } else {
             window.alert('SoliGity contract is not found in your blockchain.')
         }
@@ -58,7 +63,7 @@ class ReposPage extends Component {
     render() {
         return (
             <>
-                <LoggedInTopBar/>
+                <LoggedInTopBar account={this.state.account} balance={this.state.balance} />
 
                 <div className="page">
                     <div>

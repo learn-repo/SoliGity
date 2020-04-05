@@ -1,8 +1,11 @@
-.nav-link .nav-text 
+.nav-link 
 {
   font-size: large;
 }
-
+.navbar-text 
+{
+  font-size: large;
+}
 
 .hover-nav .hover-nav-on,
 .hover-nav:hover .hover-nav-off {
