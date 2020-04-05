@@ -61,7 +61,11 @@ function SettingsPage() {
         <>
             <LoggedInTopBar />
             <div className="page">
-                <h1 className="text-center">Settings</h1>
+                <div>
+                    <h1 class="display-4">Settings</h1>
+                    <p class="lead"></p>
+                    <hr class="my-4"></hr>
+                    </div>
                 <h2>User Settings</h2>
                 <Formik
                     validationSchema={userFormSchema}
@@ -81,7 +85,7 @@ function SettingsPage() {
                             <Form noValidate onSubmit={handleSubmit}>
                                 <Form.Row>
                                     <Form.Group as={Col} md="12" controlId="username">
-                                        <Form.Label>Username</Form.Label>
+                                        <Form.Label class="form-label-text">Username</Form.Label>
                                         <Form.Control
                                             type="text"
                                             name="username"
@@ -96,7 +100,7 @@ function SettingsPage() {
                                         </Form.Control.Feedback>
                                     </Form.Group>
                                     <Form.Group as={Col} md="12" controlId="password">
-                                        <Form.Label>Password</Form.Label>
+                                        <Form.Label class="form-label-text">Password</Form.Label>
                                         <Form.Control
                                             type="password"
                                             name="password"
@@ -136,7 +140,7 @@ function SettingsPage() {
                             <Form noValidate onSubmit={handleSubmit}>
                                 <Form.Row>
                                     <Form.Group as={Col} md="12" controlId="gitHubUsername">
-                                        <Form.Label>GitHub Username</Form.Label>
+                                        <Form.Label class="form-label-text">GitHub Username</Form.Label>
                                         <Form.Control
                                             type="text"
                                             name="gitHubUsername"
@@ -152,7 +156,7 @@ function SettingsPage() {
                                         </Form.Control.Feedback>
                                     </Form.Group>
                                     <Form.Group as={Col} md="12" controlId="gitHubPassword">
-                                        <Form.Label>Password</Form.Label>
+                                        <Form.Label class="form-label-text">Password</Form.Label>
                                         <Form.Control
                                             type="password"
                                             name="gitHubPassword"
