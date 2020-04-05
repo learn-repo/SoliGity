@@ -14,7 +14,8 @@ class ParticipatedPage extends Component {
         initialized: false,
         loading: true,
         projectNumber: 0,
-        participated: []
+        participated: [],
+        balance: 0
     }
 
     async componentDidMount() {
@@ -52,6 +53,10 @@ class ParticipatedPage extends Component {
                     participated: [...this.state.participated, event]
                 });
             }
+            let balance = await web3.eth.getBalance(accounts[0]); //Will give value in.
+            balance = web3.utils.fromWei(balance);
+            balance = Number(balance).toFixed(2);
+            this.setState({ balance: balance });
             this.setState({ loading: false })
         } else {
             window.alert('SoliGity contract is not found in your blockchain.')
@@ -61,7 +66,7 @@ class ParticipatedPage extends Component {
     render() {
         return (
             <>
-                <LoggedInTopBar account={this.state.account} />
+                <LoggedInTopBar account={this.state.account} balance={this.state.balance} />
                 <div className="page">
                     <div>
                         <h1 class="display-4">Project Catalog</h1>

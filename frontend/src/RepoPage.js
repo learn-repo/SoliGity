@@ -31,7 +31,8 @@ class RepoPage extends Component {
         account: '',
         eventNumber: 0,
         rewardEvents: [],
-        loading: true
+        loading: true,
+        balance: 0
     }
 
     async componentDidMount() {
@@ -88,6 +89,10 @@ class RepoPage extends Component {
             })
             this.setState({ rewardEvents: temp });
 
+            let balance = await web3.eth.getBalance(accounts[0]); //Will give value in.
+            balance = web3.utils.fromWei(balance);
+            balance = Number(balance).toFixed(2);
+            this.setState({ balance: balance });
 
             this.setState({ loading: false })
         } else {
@@ -142,7 +147,7 @@ class RepoPage extends Component {
 
         return (
             <>
-                <LoggedInTopBar/>
+                <LoggedInTopBar account={this.state.account} balance={this.state.balance} />
 
                 {this.state.info ?
                     <div className="page">

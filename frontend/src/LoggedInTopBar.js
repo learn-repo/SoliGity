@@ -6,7 +6,7 @@ import Logo from "./assets/logo.png";
 import Icon from "./assets/icon.png";
 import "./LoggedInTopBar.css";
 
-function LoggedInTopBar({ location, account }) {
+function LoggedInTopBar({ location, account, balance }) {
     const [redirect, setRedirect] = useState(false);
     const { pathname } = location;
     const isLoggedIn = () => !!localStorage.getItem("token");
@@ -21,7 +21,7 @@ function LoggedInTopBar({ location, account }) {
                     <Navbar.Brand href="/participated">
                         <img
                             src={Icon}
-                            width="83"
+                            width="50"
                             // height="100"
                             className="d-inline-block align-top"
                             alt="React Bootstrap logo"
@@ -42,21 +42,16 @@ function LoggedInTopBar({ location, account }) {
                             </Nav.Link>
                         </Nav>
 
-                        {/* <Nav className="topnav-right">
-                            <Navbar.Text >
-                                <span id="account">{"Your Address: " + account}</span>
-                            </Navbar.Text>
-                        </Nav> */}
-                        {/* 
-                        <Nav className='topnav-right hover-nav'>
-
-                        </Nav> */}
-
                         <Nav className="topnav-right">
-                            <Navbar.Text className="hover-nav">
+                            <Nav.Link className="hover-nav">
                                 <span class='hover-nav-off'>Your Address</span>
                                 <span class='hover-nav-on'>{account}</span>
-                            </Navbar.Text>
+                            </Nav.Link>
+
+                            <Nav.Link>
+                                Balance: {balance} ETH
+                            </Nav.Link>
+
                             <Nav.Link>
                                 <span
                                     onClick={() => {
@@ -66,6 +61,7 @@ function LoggedInTopBar({ location, account }) {
                                 </span>
                             </Nav.Link>
                         </Nav>
+
                     </Navbar.Collapse>
                 </Navbar>
             ) : null}
