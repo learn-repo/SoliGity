@@ -250,6 +250,8 @@ class RepoPage extends Component {
 
                                                 <ButtonToolbar>
                                                     <Button variant="success"
+                                                        disabled={rc.status !== "0"}
+
                                                         onClick={async (event) => {
                                                             event.preventDefault();
                                                             try {
@@ -285,6 +287,7 @@ class RepoPage extends Component {
                                                         }}>Request Review</Button>
 
                                                     <Button variant="success"
+                                                        disabled={!(this.state.account === rc.sponsorAddress && rc.status === "1")}
                                                         onClick={async (event) => {
                                                             event.preventDefault();
                                                             try {
@@ -318,7 +321,9 @@ class RepoPage extends Component {
                                                                 this.setState({ loading: false });
                                                             }
                                                         }}>Approve Pull Request</Button>
+
                                                     <Button variant="success"
+                                                        disabled={!(this.state.account === rc.sponsorAddress && rc.status === "1")}
                                                         onClick={async (event) => {
                                                             event.preventDefault();
                                                             try {
