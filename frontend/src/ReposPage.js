@@ -98,7 +98,7 @@ class ReposPage extends Component {
                                         this.setState({ loading: false });
                                     }
                                 }}>
-                                    Participate
+                                    Post to Catalog
                                 </Link>
                             </Jumbotron>
                         );
