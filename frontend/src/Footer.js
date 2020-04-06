@@ -14,7 +14,7 @@ function Footer({ location }) {
         <div class="row">
             <div class="col-lg-5 col-xs-5 about-company">
             <h3>SoliGity</h3>
-            <h5 class="pr-5 text-blcak">Engage, Envision, Enable.</h5>
+            <h5 class="pr-5 text-blcak">Post, Contribute, Award.</h5>
             </div>
             <div class="col-lg-3 col-xs-12 links">
             <h3 class="mt-lg-0 mt-sm-3">Links</h3>
