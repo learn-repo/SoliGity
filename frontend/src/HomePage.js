@@ -29,7 +29,7 @@ function HomePage() {
         }
     };
     if (redirect) {
-        return <Redirect to="/repos" />;
+        return <Redirect to="/participated" />;
     }
     return (
         <>
