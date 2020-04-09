@@ -1,4 +1,4 @@
-# EECE 571G Project
+# SoliGity Deploy and Test Procedure
 
 ## Configuring your environment
 
@@ -10,10 +10,9 @@
 
 ```
 # Clone the repository
-git clone git@github.com:ZhenpengWu/EECE-571G.git
-
+git clone git@github.com:SoliGity/SoliGity.git
 # Go inside the directory
-cd EECE-571G
+cd SoliGity
 
 # Install dependencies for backend
 yarn install
