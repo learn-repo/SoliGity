@@ -11,6 +11,7 @@
 ```
 # Clone the repository
 git clone git@github.com:SoliGity/SoliGity.git
+
 # Go inside the directory
 cd SoliGity
 
