@@ -69,20 +69,22 @@ class ParticipatedPage extends Component {
                 <LoggedInTopBar account={this.state.account} balance={this.state.balance} />
                 <div className="page">
                     <div>
-                        <h1 class="display-4">Project Catalog</h1>
+                        <h1 class="display-5">Project Catalog</h1>
                         <p class="lead"></p>
                         <hr class="my-4"></hr>
                     </div>
                     {this.state.participated.map(rc => {
                         return (
-                            <Jumbotron>
-                                <h1>{rc.name}</h1>
-                                <p>{`Owner: ${rc.owner}`}</p>
-                                <p> {rc.description}</p>
-                                <p>
+                            <Jumbotron className="customShadow" style={{ paddingTop: "25px", paddingBottom: "25px", display:'flex', flexDirection: 'row', justifyContent:'space-between', alignItems:'center'}} >
+                                <div>
+                                    <h2>{rc.name}</h2>
+                                    <p>{`Owner: ${rc.owner}`}</p>
+                                    <p> {rc.description}</p>
+                                </div>
+                                <div style={{display:'flex', flexDirection: 'column', justifyContent:'space-between'}}>
                                     <Link className="btn btn-primary float-right" to={`/repo?repo=${rc.name}&?owner=${rc.owner}`}>View Project</Link>
                                     <Button variant="success float-right" href={rc.url}>Go to Repository</Button>
-                                </p>
+                                </div>
                             </Jumbotron>
 
                         );

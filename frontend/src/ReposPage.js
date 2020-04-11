@@ -67,16 +67,18 @@ class ReposPage extends Component {
 
                 <div className="page">
                     <div>
-                        <h1 class="display-4">My Repositories</h1>
+                        <h1 class="display-5">My Repositories</h1>
                         <p class="lead"></p>
                         <hr class="my-4"></hr>
                     </div>
                     {this.state.repositories.map((r, i) => {
                         return (
-                            <Jumbotron style={{ paddingTop: "30px", paddingBottom: "30px" }} >
-                                <h1>{r.name}</h1>
-                                <p>{r.description ? r.description : "No Description."}</p>
-                                <Link className="btn btn-success" onClick={async (event) => {
+                            <Jumbotron className="customShadow" style={{ paddingTop: "20px", paddingBottom: "20px", display:'flex', flexDirection: 'row', justifyContent:'space-between', alignItems:'center', marginBottom: '1rem'}} >
+                                <div>
+                                    <h3>{r.name}</h3>
+                                    <p>{r.description ? r.description : "No Description."}</p>
+                                </div>
+                                <Link style={{height: 40}} className="btn btn-success" onClick={async (event) => {
                                     try {
                                         const [owner, repo] = r.full_name.split("/");
                                         const description = r.description || "No Description";

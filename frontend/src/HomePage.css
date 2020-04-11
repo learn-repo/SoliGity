@@ -1,3 +1,17 @@
 .page {
-    padding: 90px;
-  }
+  padding: 90px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+div {
+  border-radius: 15px !important;
+}
+input {
+  border-radius: 10px !important;
+}
+a {
+  border-radius: 10px !important;
+}
+nav {
+  border-radius: 15px !important;
+}

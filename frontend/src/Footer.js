@@ -33,7 +33,7 @@ function Footer({ location }) {
                     Canada</p>  
             </div>
         </div>
-        <div class="row mt-5">
+        <div class="row mt-2">
             <div class="col copyright">
             <p class=""><small class="text-black">© 2020 SoliGity All Rights Reserved.</small></p>
             </div>

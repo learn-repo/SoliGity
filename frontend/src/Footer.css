@@ -15,10 +15,14 @@
     transition: color .2s;
     &:hover{color:#4180CB}
     }
-} 
+}
 
 .location{
     i{font-size: 18px;}
 }
 .copyright p{border-top:1px solid rgb(0, 0, 0);} 
+}
+
+.container h3{
+    margin-bottom: 8px;  
 }

@@ -105,7 +105,7 @@ function HomePage() {
                                         </div>
 
 
-                                        <div className="text-center p-t-115">
+                                        <div className="text-center p-t-30">
                                             <span className="txt1">
                                                 Don’t have an account?
                                     </span>

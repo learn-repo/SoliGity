@@ -1,3 +1,7 @@
 .jumbotron{
-    background-image: linear-gradient(to bottom, rgba(255, 255, 255, 1) 0%,rgba(255, 255, 255, 0.1) 100%);
+    background-image: linear-gradient(rgba(250, 250, 250, 1),rgba(236, 236, 236, 1));
+}
+
+.jumbotron p,a,h1 {
+    margin-bottom: 4px;
 }

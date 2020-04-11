@@ -152,7 +152,7 @@ class RepoPage extends Component {
                 {this.state.info ?
                     <div className="page">
                         <div>
-                            <h1 class="display-4">{this.state.info.name}
+                            <h1 class="display-5">{this.state.info.name}
                                 <p class="lead"></p>
                                 <Button variant="success" href={this.state.info.url}>Go to Repository</Button>
                                 <Button variant="success"

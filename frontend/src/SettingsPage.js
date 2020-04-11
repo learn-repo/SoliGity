@@ -110,7 +110,7 @@ class SettingsPage extends Component {
                     <div className="container-login100">
                         <div className="wrap-login100">
                             <div>
-                                <h1 class="display-4">Settings</h1>
+                                <h1 class="display-5">Settings</h1>
                                 <p class="lead"></p>
                                 <hr class="my-4"></hr>
                             </div>
